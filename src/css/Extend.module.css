@@ -1,0 +1,24 @@
+.contentExtend {
+  padding: 40px 60px;
+}
+
+.btnManageKitchen button,
+.btnXuatFile button {
+  width: 100%;
+  padding: 10px 0px;
+  border-radius: 24px;
+  margin: 10px;
+  border: none;
+  background-color: #644bff;
+  color: white;
+  position: relative;
+  /* display: inline-flex; */
+  /* align-items: center; */
+}
+
+.btnManageKitchen button i,
+.btnXuatFile button i {
+  position: absolute;
+  right: 10px;
+  padding-right: 20px;
+}

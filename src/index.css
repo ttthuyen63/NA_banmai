@@ -1,13 +1,293 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  text-decoration: none;
+}
+
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.content {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.content-header {
+  /* padding-top: 0.5rem; */
+  /* padding-right: 2rem; */
+  height: 3rem;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #644bff;
+  color: #fff;
+  height: 60px;
+}
+
+.back-button-header {
+  cursor: pointer;
+  padding: 10px 10px 10px 10px;
+}
+
+.title-header {
+  flex: 1;
+  text-align: center;
+}
+
+.info-staff {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.info-staff th,
+td {
+  padding: 8px;
+  margin-bottom: 20px;
+}
+
+.info-staff td {
+  padding-left: 40px;
+}
+
+.btn-detail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-button {
+  margin-top: 20px;
+  color: black;
+}
+
+.btn-detail button {
+  width: 40%;
+  text-align: center;
+  background-color: #baeaff;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  /* margin-bottom: 10px; */
+  margin-top: 20px;
+  font-weight: 700;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  /* align-items: center; */
+}
+
+.form-group input {
+  border-radius: 8px;
+  /* align-items: start; */
+  border: 1px solid #dbddde;
+  padding: 10px;
+  width: 50%;
+}
+
+.form-group label {
+  width: 33%;
+}
+
+.form-group .create-acc label {
+  width: 20%;
+}
+
+.form-group .select-part {
+  border-radius: 8px;
+  align-items: start;
+  border: 1px solid #dbddde;
+  padding: 10px;
+  width: 50%;
+}
+
+.edit-idStaff {
+  margin: 20px;
+  text-align: center;
+}
+
+.edit-btn-submit,
+.create-btn-submit {
+  text-align: center;
+}
+
+.edit-btn-submit button,
+.create-btn-submit button {
+  background-color: #baeaff;
+  color: black;
+  border-radius: 20px;
+  border: none;
+  padding: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.empty-account {
+  margin: 40px;
+}
+
+.create-acc label {
+  width: 25%;
+}
+
+.update-password label {
+  width: 25%;
+}
+.create-acc input {
+  width: 75%;
+}
+.update-password input {
+  width: 75%;
+}
+
+.container-center {
+  display: grid;
+  place-items: center;
+  margin-top: 40px;
+}
+
+.create-acc-form,
+.update-password-form {
+  width: 75%;
+}
+
+.create {
+  margin-top: 40px;
+}
+
+.inputSearch {
+  padding-left: 30px; /* Để tạo khoảng trống cho biểu tượng */
+  width: 500px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  outline: none;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+/* css kitchen manager */
+.header-kitchen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #644bff;
+  color: white;
+  padding: 10px 20px;
+}
+
+.header_kitchen_left {
+  display: flex;
+  align-items: center;
+}
+
+.header_kitchen_search-input {
+  margin-right: 10px;
+  border-radius: 24px;
+  padding: 10px;
+  border: none;
+}
+
+.header_kitchen_center {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header_kitchen_right {
+  display: flex;
+  align-items: center;
+}
+
+.header_kitchen_create-button {
+  background-color: white;
+  color: black;
+  border-radius: 24px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+}
+
+/* css kitchen staff */
+.header-kitchen-staff {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #644bff;
+  color: white;
+  padding: 10px 20px;
+}
+
+.header_kitchen-staff_left {
+  display: flex;
+  align-items: center;
+}
+
+.header_kitchen-staff_back-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.header_kitchen-staff_center {
+  /* flex-grow: 1; */
+  text-align: center;
+}
+
+.header_kitchen-staff_right {
+  display: flex;
+  align-items: center;
+  border: 1px solid white;
+  background-color: white;
+  color: black;
+  padding: 0px 20px;
+  border-radius: 24px;
+}
+
+.header_kitchen-staff_kitchen-code {
+  font-size: 14px;
+}
+
+.pagination {
+  /* position: absolute; */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  /* background-color: #f5f5f5; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination .page {
+  padding: 0px 40px;
+}
+

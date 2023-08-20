@@ -1,0 +1,41 @@
+.search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #644bff;
+  width: 100%;
+  margin-left: auto;
+  padding: 10px;
+}
+
+.searchContainer {
+  position: relative;
+  width: 500px;
+}
+.btnSelect {
+  width: 200px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  outline: none;
+}
+.inputSearch {
+  padding-left: 30px; /* Để tạo khoảng trống cho biểu tượng */
+  width: 500px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  outline: none;
+}
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+.btnCreate {
+  color: white;
+  cursor: pointer;
+}
