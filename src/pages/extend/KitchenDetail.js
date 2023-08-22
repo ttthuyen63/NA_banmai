@@ -6,7 +6,7 @@ import { url } from "../../config/api";
 
 export default function KitchenDetail() {
   const params = useParams();
-  const kitchen_code = params.kitchen_code;
+  const kitchenCode = params.kitchenCode;
   const navigate = useNavigate();
   const [kitchenDetailData, setKitchenDetailData] = useState([]);
   const token = localStorage.getItem("token");
@@ -15,7 +15,7 @@ export default function KitchenDetail() {
   }, []);
   const getKitchenDetailApi = async () => {
     var myHeaders = new Headers();
-    myHeaders.append("kitchen_code", `${kitchen_code}`);
+    myHeaders.append("kitchenCode", `${kitchenCode}`);
     myHeaders.append("Authorization", `Bearer ${token}`);
 
     // var raw = "";
@@ -39,7 +39,7 @@ export default function KitchenDetail() {
     } catch (error) {
       console.log("Error:", error);
     }
-    console.log("kitchen_code", kitchen_code);
+    console.log("kitchenCode", kitchenCode);
   };
 
   const handleBackClick = () => {

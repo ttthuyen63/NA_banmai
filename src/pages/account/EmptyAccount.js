@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function EmptyAccount() {
   const navigate = useNavigate();
   const handleBackClick = () => {
-    navigate("/staffDetail");
+    navigate(-1);
     console.log("Back button clicked");
   };
   return (

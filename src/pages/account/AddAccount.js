@@ -18,7 +18,7 @@ export default function AddAccount() {
     }
   };
   const handleBackClick = () => {
-    navigate("/staffDetail");
+    navigate(-1);
     console.log("Back button clicked");
   };
   return (

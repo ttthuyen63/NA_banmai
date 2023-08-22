@@ -23,6 +23,7 @@ import EditKitchen from "./pages/extend/EditKitchen";
 import Settings from "./pages/setting/Settings";
 import store from "./redux/store";
 import ProtectRouter from "./components/ProtectRouter";
+import XuatExcel from "./pages/setting/XuatExcel";
 
 const router = createBrowserRouter([
   {
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/staffDetail/:personnel_code",
+    path: "/staffDetail/:personnelCode",
     element: (
       <ProtectRouter>
         <StaffDetail />
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/staffEdit/:personnel_code",
+    path: "/staffEdit/:personnelCode",
     element: (
       <ProtectRouter>
         <EditStaff />
@@ -114,7 +115,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/kitchenDetail/:kitchen_code",
+    path: "/kitchenDetail/:kitchenCode",
     element: (
       <ProtectRouter>
         <KitchenDetail />
@@ -130,7 +131,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/kitchenEdit/:kitchen_code",
+    path: "/kitchenEdit/:kitchenCode",
     element: (
       <ProtectRouter>
         <EditKitchen />
@@ -142,6 +143,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectRouter>
         <Settings />
+      </ProtectRouter>
+    ),
+  },
+  {
+    path: "/exportExcel",
+    element: (
+      <ProtectRouter>
+        <XuatExcel />
       </ProtectRouter>
     ),
   },

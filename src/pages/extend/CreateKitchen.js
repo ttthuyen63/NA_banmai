@@ -45,7 +45,7 @@ export default function CreateKitchen() {
   };
 
   const handleBackClick = () => {
-    navigate("/kitchenManager");
+    navigate(-1);
     console.log("Back button clicked");
   };
 

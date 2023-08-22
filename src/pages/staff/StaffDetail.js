@@ -7,16 +7,17 @@ import { currencyFormat } from "../../ultils/constant";
 
 export default function StaffDetail() {
   const params = useParams();
-  const personnel_code = params.personnel_code;
+  const personnelCode = params.personnelCode;
   const navigate = useNavigate();
   const [personnelDetailData, setpersonnelDetailData] = useState([]);
+  const [accountByCodelData, setaccountByCodelData] = useState([]);
   const token = localStorage.getItem("token");
   useEffect(() => {
     getpersonnelDetailApi();
   }, []);
   const getpersonnelDetailApi = async () => {
     var myHeaders = new Headers();
-    myHeaders.append("personnel_code", `${personnel_code}`);
+    myHeaders.append("personnelCode", `${personnelCode}`);
     myHeaders.append("Authorization", `Bearer ${token}`);
 
     // var raw = "";
@@ -40,7 +41,39 @@ export default function StaffDetail() {
     } catch (error) {
       console.log("Error:", error);
     }
-    console.log("personnel_code", personnel_code);
+    console.log("personnelCode", personnelCode);
+  };
+
+  useEffect(() => {
+    getaccountByCodeApi();
+  }, []);
+  const getaccountByCodeApi = async () => {
+    var myHeaders = new Headers();
+    myHeaders.append("personnelCode", `${personnelCode}`);
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    // var raw = "";
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      // body: raw,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${url}/account/management/search/find-by-personnel-code`,
+        requestOptions
+      );
+      const result = await response.json();
+      const data = result?.data;
+      setaccountByCodelData(data);
+      console.log(data);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+    console.log("accountByCodelData", accountByCodelData);
   };
   const handleBackClick = () => {
     navigate(-1);
@@ -52,7 +85,7 @@ export default function StaffDetail() {
     });
   };
   const gotoAccount = () => {
-    navigate("/account");
+    // navigate("/account");
   };
   console.log("personnelData", personnelDetailData);
 

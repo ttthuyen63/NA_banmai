@@ -47,8 +47,8 @@ export default function CreateStaff() {
     value: option.key,
   }));
 
-  const [selectedPart, setSelectedPart] = useState(""); // Chọn tùy chọn đầu tiên
-  const [selectedPosition, setSelectedPosition] = useState(""); // Chọn tùy chọn đầu tiên
+  const [selectedPart, setSelectedPart] = useState("");
+  const [selectedPosition, setSelectedPosition] = useState("");
 
   const handleBackClick = () => {
     navigate("/");
@@ -120,11 +120,7 @@ export default function CreateStaff() {
                 </div>
                 <div className="create form-group">
                   <label>Tên:</label>
-                  <input
-                    ref={lastNameRef}
-                    type="text"
-                    placeholder="Nhập tên"
-                  />
+                  <input ref={lastNameRef} type="text" placeholder="Nhập tên" />
                 </div>
                 <div className=" create form-group">
                   <label>Mã nhân viên:</label>
@@ -154,7 +150,7 @@ export default function CreateStaff() {
                     <label>Mã bếp:</label>
                     <input
                       type="text"
-                      ref={kitchenCodeRef} // Sử dụng useRef ở đây
+                      ref={kitchenCodeRef}
                       placeholder="Nhập mã bếp"
                     />
                   </div>

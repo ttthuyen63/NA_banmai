@@ -19,7 +19,6 @@ export default function EditKitchen() {
   const [location, setlocation] = useState(itemDetail?.location);
 
   const handleBackClick = () => {
-    // navigate("/kitchenDetail");
     navigate(-1);
   };
   const handleSubmit = async (e) => {

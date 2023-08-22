@@ -6,11 +6,12 @@ import styles from "../../css/Staff.module.css";
 import { Container, Row, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 import { useNavigate } from "react-router-dom";
-import { url } from "../../config/api";
+import { url, localUrl } from "../../config/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Staff() {
@@ -22,6 +23,7 @@ export default function Staff() {
 
   const getpersonnelApi = async (page) => {
     var myHeaders = new Headers();
+    myHeaders.append("Access-Control-Allow-Origin", `${localUrl}`);
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -64,6 +66,9 @@ export default function Staff() {
     navigate("/staffDetail/" + code);
     console.log("code", code);
   };
+  const gotoCreateStaff = () => {
+    navigate("/createStaff");
+  };
 
   return (
     <div className="row">
@@ -74,7 +79,42 @@ export default function Staff() {
       <div className="col-sm-10">
         <div className="content">
           <div className="content-header">
-            <Search />
+            <div className="search">
+              <div
+                className="btnSelect"
+                // onClick={onBackClick}
+              >
+                <select
+                  className="btnSelect"
+                  // value={selectedOption} onChange={handleSelectChange}
+                >
+                  <option value="">Nâng cao</option>
+                  <option value="option1">Tùy chọn 1</option>
+                  <option value="option2">Tùy chọn 2</option>
+                  <option value="option3">Tùy chọn 3</option>
+                </select>
+              </div>
+              <div className="searchContainer">
+                <i>
+                  <FontAwesomeIcon icon={faSearch} className="searchIcon" />
+                </i>
+                <input
+                  className="inputSearch"
+                  type="text"
+                  placeholder="Tìm kiếm..."
+                />
+              </div>
+
+              <div
+                className="btnCreate"
+                onClick={() => {
+                  gotoCreateStaff();
+                }}
+              >
+                Thêm
+                {/* <FontAwesomeIcon icon={faPlus} /> */}
+              </div>
+            </div>
           </div>
           <div className="content">
             <div className={styles.staffInfo}>

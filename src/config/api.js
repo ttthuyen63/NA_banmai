@@ -9,3 +9,5 @@ export const customAxios = axios.create({
 });
 
 export const url = "http://100.82.237.81:8889/banmai/api/v1";
+
+export const localUrl = "http://localhost:3000";

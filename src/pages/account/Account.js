@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function Account() {
   const navigate = useNavigate();
   const handleBackClick = () => {
-    navigate("/staffDetail");
+    navigate(-1);
     console.log("Back button clicked");
   };
   const gotoEditPass = () => {

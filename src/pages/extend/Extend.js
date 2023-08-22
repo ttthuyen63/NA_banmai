@@ -11,6 +11,9 @@ export default function Extend() {
   const gotoKitchenManage = () => {
     navigate("/kitchenManager");
   };
+  const gotoExportExcel = () => {
+    navigate("/exportExcel");
+  };
   return (
     <div className="row">
       <div className="col-sm-2">
@@ -36,7 +39,12 @@ export default function Extend() {
                 </i>
               </button>
             </div>
-            <div className={styles.btnXuatFile}>
+            <div
+              className={styles.btnXuatFile}
+              onClick={() => {
+                gotoExportExcel();
+              }}
+            >
               <button>
                 Xuất file Excel
                 <i>

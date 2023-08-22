@@ -83,3 +83,5 @@ export default function Login() {
     </Container>
   );
 }
+
+// chrome.exe --disable-web-security --user-data-dir="C:\some\directory"

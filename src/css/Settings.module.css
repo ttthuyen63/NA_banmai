@@ -4,4 +4,47 @@
   justify-content: center;
   align-items: center;
   padding: 15px;
+  border-radius: 8px;
+  border: 1px solid black;
+  font-weight: 700;
+}
+.ContentSettingTitle {
+  background-color: #eeeeee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid black;
+  font-weight: 700;
+}
+
+.ContentSettingAccount {
+  margin-left: 5%;
+}
+
+.ContentSettingAccount td {
+  padding-left: 40px;
+}
+
+.btnChangePassword {
+  text-align: center;
+}
+
+.btnChangePassword button {
+  width: 75%;
+  padding: 10px 20px;
+  background-color: #baeaff;
+  font-size: medium;
+  font-weight: bold;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  border-radius: 15px;
+  margin-top: 30px;
+}
+
+.btnChangePassword button:hover {
+  background-color: #1f80f0;
 }

@@ -69,7 +69,7 @@ export default function KitchenManage() {
   };
 
   const handleBackClick = () => {
-    navigate("/extend");
+    navigate(-1);
     console.log("Back button clicked");
   };
   console.log("currentPage", currentPage);

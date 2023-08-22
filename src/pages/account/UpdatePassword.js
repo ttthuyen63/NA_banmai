@@ -19,7 +19,7 @@ export default function UpdatePassword() {
     }
   };
   const handleBackClick = () => {
-    navigate("/account");
+    navigate(-1);
     console.log("Back button clicked");
   };
   return (
