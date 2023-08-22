@@ -51,8 +51,8 @@ export default function KitchenDetail() {
       state: kitchenDetailData,
     });
   };
-  const gotoAccount = () => {
-    navigate("/kitchenStaffDetail");
+  const gotoKitchenStaff = (kitchenCode) => {
+    navigate("/kitchenStaffDetail/" + kitchenCode);
   };
   return (
     // <div className="container">
@@ -107,7 +107,7 @@ export default function KitchenDetail() {
             <div className="btn-detail account-button">
               <button
                 onClick={() => {
-                  gotoAccount();
+                  gotoKitchenStaff(kitchenDetailData?.kitchenCode);
                 }}
                 className="btn btn-primary"
               >

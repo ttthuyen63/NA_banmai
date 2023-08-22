@@ -12,6 +12,7 @@ import StaffDetail from "./pages/staff/StaffDetail";
 import EditStaff from "./pages/staff/EditStaff";
 import Account from "./pages/account/Account";
 import AddAccount from "./pages/account/AddAccount";
+import EmptyAccount from "./pages/account/EmptyAccount";
 import UpdatePassword from "./pages/account/UpdatePassword";
 import Extend from "./pages/extend/Extend";
 import CreateStaff from "./pages/staff/CreateStaff";
@@ -63,17 +64,17 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/account",
+    path: "/account/:personnelCode",
     element: (
       <ProtectRouter>
         <Account />
       </ProtectRouter>
     ),
   },
-  // {
-  //   path: "/account",
-  //   element: <EmptyAccount />,
-  // },
+  {
+    path: "/emptyAccount",
+    element: <EmptyAccount />,
+  },
   {
     path: "/createAccount",
     element: (
@@ -123,7 +124,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/kitchenStaffDetail",
+    path: "/kitchenStaffDetail/:kitchenCode",
     element: (
       <ProtectRouter>
         <KitchenStaffDetail />

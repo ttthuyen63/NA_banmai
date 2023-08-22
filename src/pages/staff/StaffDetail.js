@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
 import { currencyFormat } from "../../ultils/constant";
+import { Button, Container, Modal, Tooltip } from "react-bootstrap";
 
 export default function StaffDetail() {
   const params = useParams();
@@ -11,6 +12,9 @@ export default function StaffDetail() {
   const navigate = useNavigate();
   const [personnelDetailData, setpersonnelDetailData] = useState([]);
   const [accountByCodelData, setaccountByCodelData] = useState([]);
+  const [showDel, setshowDel] = useState(false);
+  const [deleteCode, setdeleteCode] = useState("");
+
   const token = localStorage.getItem("token");
   useEffect(() => {
     getpersonnelDetailApi();
@@ -73,8 +77,8 @@ export default function StaffDetail() {
     } catch (error) {
       console.log("Error:", error);
     }
-    console.log("accountByCodelData", accountByCodelData);
   };
+  console.log("accountByCodelData", accountByCodelData);
   const handleBackClick = () => {
     navigate(-1);
     console.log("Back button clicked");
@@ -84,14 +88,89 @@ export default function StaffDetail() {
       state: personnelDetailData,
     });
   };
-  const gotoAccount = () => {
-    // navigate("/account");
+
+  const handleClose = () => {
+    setshowDel(false);
+  };
+
+  const handleClickDelete = (code) => {
+    setdeleteCode(code);
+    setshowDel(true);
+    // console.log("id...", id);
+  };
+
+  const handleDelete = async () => {
+    const token = localStorage.getItem("token");
+    console.log("token", token);
+    var myHeaders = new Headers();
+    myHeaders.append("personnelCode", `${personnelCode}`);
+    myHeaders.append("removeType", "REMOVE");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${url}/personnel/management/remove`,
+        requestOptions
+      );
+      const result = await response.text();
+      console.log(result);
+      navigate(-1); // Chuyển hướng sau khi tạo thành công
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+  const gotoAccount = (code) => {
+    if (accountByCodelData == null) {
+      navigate("/emptyAccount");
+    } else {
+      navigate("/account" + code);
+    }
+    //
   };
   console.log("personnelData", personnelDetailData);
 
   return (
     // <div className="container">
     <div className="staffDetail">
+      <div>
+        <Modal show={showDel} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Xác nhận xóa</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Bạn có chắc chắn muốn xóa?</Modal.Body>
+          <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              style={{
+                backgroundColor: "#baeaff",
+                border: "none",
+                color: "black",
+              }}
+              // onClick={() => handleDelete(item?.id)
+              onClick={handleDelete}
+              // }
+            >
+              Chắc chắn
+            </Button>
+            <Button
+              style={{
+                backgroundColor: "#ffbacf",
+                border: "none",
+                color: "black",
+              }}
+              onClick={handleClose}
+            >
+              Không
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
       <div className="detail-header">
         <div
           className="back-button-header"
@@ -164,12 +243,19 @@ export default function StaffDetail() {
               </button>
             </div>
             <div className="btn-detail delete-button">
-              <button className="btn btn-primary">Xóa nhân viên</button>
+              <button
+                className="btn btn-primary"
+                onClick={() =>
+                  handleClickDelete(personnelDetailData?.personnelCode)
+                }
+              >
+                Xóa nhân viên
+              </button>
             </div>
             <div className="btn-detail account-button">
               <button
                 onClick={() => {
-                  gotoAccount();
+                  gotoAccount(personnelDetailData?.personnelCode);
                 }}
                 className="btn btn-primary"
               >

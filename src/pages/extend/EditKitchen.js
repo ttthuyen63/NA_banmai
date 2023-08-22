@@ -12,7 +12,7 @@ export default function EditKitchen() {
   const itemDetail = stateLocation?.state;
 
   const { kitchenCode, ...newObject } = itemDetail;
-  console.log("nameObject...", newObject);
+  console.log("kitchenCode...", kitchenCode);
   // const queryParams = new URLSearchParams(window.location.search);
 
   const [name, setname] = useState(itemDetail?.name);
@@ -24,9 +24,8 @@ export default function EditKitchen() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    console.log("token", token);
     var myHeaders = new Headers();
-    myHeaders.append("kitchen_code", `${kitchen_code}`);
+    myHeaders.append("kitchenCode", `${kitchenCode}`);
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 

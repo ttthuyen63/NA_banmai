@@ -2,7 +2,7 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { customAxios, url } from "../../config/api";
+import { url } from "../../config/api";
 
 export default function CreateKitchen() {
   const navigate = useNavigate();

@@ -12,7 +12,8 @@ export default function EditStaff() {
   const { ...stateLocation } = useLocation();
   const itemDetail = stateLocation?.state;
 
-  const { kitchenCode, fullName, ...newObject } = itemDetail;
+  const { kitchenCode, fullName, isOutOfWord, startDate, ...newObject } =
+    itemDetail;
   console.log("nameObject...", newObject);
 
   const [splittedStrings, setSplittedStrings] = useState([]);
@@ -28,7 +29,7 @@ export default function EditStaff() {
   const [lastName, setlastName] = useState("");
   const [part, setpart] = useState(itemDetail?.part);
   const [position, setposition] = useState(itemDetail?.position);
-  const [startDate, setstartDate] = useState(itemDetail?.startDate);
+  // const [startDate, setstartDate] = useState(itemDetail?.startDate);
   const [kitchen_code, setkitchen_code] = useState(itemDetail?.kitchenCode);
   const [personnel_code, setpersonnel_code] = useState(
     itemDetail?.personnelCode
@@ -90,28 +91,24 @@ export default function EditStaff() {
     var raw = JSON.stringify({
       data: {
         ...newObject,
-        personnelCode: personnel_code,
         basicSalary: basicSalary,
         birthDate: birthDate,
         firstName: firstName,
-        midName: midName,
+        kitchenCode: kitchenCode,
         lastName: lastName,
+        midName: midName,
         part: part,
         position: position,
-        // startDate: startDate,
-        kitchenCode: kitchenCode,
       },
       updateFields: [
-        "basicSalary",
-        "birthDate",
         "firstName",
         "midName",
         "lastName",
-        "part",
+        "birthDate",
         "position",
-        // "startDate",
+        "part",
+        "basicSalary",
         "kitchenCode",
-        // "isOutOfWord",
       ],
     });
 

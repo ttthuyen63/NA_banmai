@@ -17,9 +17,34 @@ import {
 export default function Staff() {
   const navigate = useNavigate();
   const [personnelData, setpersonnelData] = useState([]);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 6;
   const token = localStorage.getItem("token");
+  const data = {
+    parts: [
+      { key: "KITCHEN", value: "Bếp" },
+      { key: "HR", value: "Human Resources" },
+      { key: "MANAGEMENT", value: "Hành chính" },
+    ],
+    positions: [
+      { key: "PERSONNEL", value: "Nhân viên" },
+      { key: "MANAGER", value: "Quản lý" },
+    ],
+  };
+
+  const partOptions = data.parts.map((option) => ({
+    label: option?.value,
+    value: option?.key,
+  }));
+
+  const positionOptions = data.positions.map((option) => ({
+    label: option.value,
+    value: option.key,
+  }));
+
+  const [selectedPart, setSelectedPart] = useState("");
+  const [selectedPosition, setSelectedPosition] = useState("");
 
   const getpersonnelApi = async (page) => {
     var myHeaders = new Headers();
@@ -71,114 +96,126 @@ export default function Staff() {
   };
 
   return (
-    <div className="row">
-      <div className="col-sm-2">
-        <Sidebar />
-      </div>
+    <>
+      <div className="row">
+        <div className="col-sm-2">
+          <Sidebar />
+        </div>
 
-      <div className="col-sm-10">
-        <div className="content">
-          <div className="content-header">
-            <div className="search">
-              <div
-                className="btnSelect"
-                // onClick={onBackClick}
-              >
-                <select
+        <div className="col-sm-10">
+          <div className="content">
+            <div className="content-header">
+              <div className="search">
+                <button
                   className="btnSelect"
-                  // value={selectedOption} onChange={handleSelectChange}
+                  onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
                 >
-                  <option value="">Nâng cao</option>
-                  <option value="option1">Tùy chọn 1</option>
-                  <option value="option2">Tùy chọn 2</option>
-                  <option value="option3">Tùy chọn 3</option>
-                </select>
-              </div>
-              <div className="searchContainer">
-                <i>
-                  <FontAwesomeIcon icon={faSearch} className="searchIcon" />
-                </i>
-                <input
-                  className="inputSearch"
-                  type="text"
-                  placeholder="Tìm kiếm..."
-                />
-              </div>
+                  Nâng cao
+                </button>
 
-              <div
-                className="btnCreate"
-                onClick={() => {
-                  gotoCreateStaff();
-                }}
-              >
-                Thêm
-                {/* <FontAwesomeIcon icon={faPlus} /> */}
+                <div className="searchContainer">
+                  <i>
+                    <FontAwesomeIcon icon={faSearch} className="searchIcon" />
+                  </i>
+                  <input
+                    className="inputSearch"
+                    type="text"
+                    placeholder="Tìm kiếm..."
+                  />
+                </div>
+
+                <div
+                  className="btnCreate"
+                  onClick={() => {
+                    gotoCreateStaff();
+                  }}
+                >
+                  Thêm
+                  {/* <FontAwesomeIcon icon={faPlus} /> */}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="content">
-            <div className={styles.staffInfo}>
-              {personnelData?.map((item, index) => (
-                <div className={styles.infoBox}>
-                  <h4 className="info-title">{item?.personnelCode}</h4>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <th>Họ và tên:</th>
-                        <td>{item?.fullName}</td>
-                      </tr>
-                      <tr>
-                        <th>Ngày sinh:</th>
-                        <td>{item?.birthDate}</td>
-                      </tr>
-                      <tr>
-                        <th>Bộ phận:</th>
-                        <td>{item?.part}</td>
-                      </tr>
-                      <tr>
-                        <th>Chức vụ:</th>
-                        <td>{item?.position}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div
-                    className={styles.btnDetail}
-                    onClick={() => goToDetail(item?.personnelCode)}
-                  >
-                    <button>Xem chi tiết</button>
+            <div className="content">
+              {showAdvancedSearch && (
+                <div className="advanced-search">
+                  <div>
+                    <select>
+                      <option value="">Bộ phận</option>
+                    </select>
+                  </div>
+
+                  <br />
+                  <div>
+                    <select>
+                      <option value="">Chức vụ</option>
+                      {/* Điền tùy chọn chức vụ ở đây */}
+                    </select>
                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="pagination">
-              <div
-                className={`back-button-header ${
-                  currentPage === 1 ? "disabled" : ""
-                }`}
-                onClick={() => {
-                  if (currentPage > 1) {
-                    setCurrentPage(currentPage - 1);
-                  }
-                }}
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
+              )}
+              <div className={styles.staffInfo}>
+                {personnelData?.map((item, index) => (
+                  <div className={styles.infoBox}>
+                    <h4 className="info-title">{item?.personnelCode}</h4>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <th>Họ và tên:</th>
+                          <td>{item?.fullName}</td>
+                        </tr>
+                        <tr>
+                          <th>Ngày sinh:</th>
+                          <td>{item?.birthDate}</td>
+                        </tr>
+                        <tr>
+                          <th>Bộ phận:</th>
+                          <td>{item?.part}</td>
+                        </tr>
+                        <tr>
+                          <th>Chức vụ:</th>
+                          <td>{item?.position}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div
+                      className={styles.btnDetail}
+                      onClick={() => goToDetail(item?.personnelCode)}
+                    >
+                      <button>Xem chi tiết</button>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <span className="">{currentPage}</span>
+              <div className="pagination">
+                <div
+                  className={`back-button-header ${
+                    currentPage === 1 ? "disabled" : ""
+                  }`}
+                  onClick={() => {
+                    if (currentPage > 1) {
+                      setCurrentPage(currentPage - 1);
+                    }
+                  }}
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                </div>
+                <span className="">{currentPage}</span>
 
-              <div
-                className={`back-button-header ${
-                  currentPage * recordsPerPage >= personnelData.length
-                    ? "disabled"
-                    : ""
-                }`}
-                onClick={() => setCurrentPage(currentPage + 1)}
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
+                <div
+                  className={`back-button-header ${
+                    currentPage * recordsPerPage >= personnelData.length
+                      ? "disabled"
+                      : ""
+                  }`}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                >
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

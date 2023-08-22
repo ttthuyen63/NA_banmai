@@ -186,18 +186,21 @@ export default function CreateStaff() {
                   <label>Ngày vào làm:</label>
                   <input type="date" ref={startDateRef} />
                 </div>
-                <div className="create form-group">
+                <div className="create select form-group">
                   <label>Chức vụ:</label>
-                  <Select
-                    options={positionOptions}
-                    isClearable={true}
-                    value={selectedPosition}
-                    ref={selectedPositionRef}
-                    onChange={(selectedOption) => {
-                      setSelectedPosition(selectedOption);
-                      selectedPositionRef.current.value = selectedOption.value; // Cập nhật giá trị vào biến ref
-                    }}
-                  />
+                  <div className="select-part">
+                    <Select
+                      options={positionOptions}
+                      isClearable={true}
+                      value={selectedPosition}
+                      ref={selectedPositionRef}
+                      onChange={(selectedOption) => {
+                        setSelectedPosition(selectedOption);
+                        selectedPositionRef.current.value =
+                          selectedOption.value; // Cập nhật giá trị vào biến ref
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </form>
