@@ -307,3 +307,12 @@ td {
 }
 .select-option {
 }
+
+.ok-filter {
+  margin-top: 10px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background-color: #644bff;
+  color: white;
+  border: none;
+}

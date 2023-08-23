@@ -14,6 +14,7 @@ import {
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import Options from "../../components/Options";
+import Select from "react-select";
 
 export default function Staff() {
   const navigate = useNavigate();
@@ -61,6 +62,43 @@ export default function Staff() {
 
     var raw = JSON.stringify({
       personnelCode: personnelCodeRef?.current?.value,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${url}/personnel/management/search?${queryParams.toString()}`,
+        requestOptions
+      );
+      const result = await response.json();
+      const data = result?.data?.content;
+      setpersonnelData(data);
+      console.log(data);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
+  const getpersonnelFiltleApi = async (page) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Origin", `${localUrl}`);
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const queryParams = new URLSearchParams({
+      // page: currentPage - 1, // Trang bắt đầu từ 0
+      // size: recordsPerPage,
+    });
+
+    var raw = JSON.stringify({
+      part: selectedPart?.value,
+      position: selectedPosition?.value,
     });
 
     var requestOptions = {
@@ -204,18 +242,37 @@ export default function Staff() {
               {showAdvancedSearch && (
                 <div className="advanced-search">
                   <div>
-                    <select>
-                      <option value="">Bộ phận</option>
-                    </select>
+                    <Select
+                      options={partOptions}
+                      isClearable={true}
+                      value={selectedPart}
+                      placeholder="Bộ phận"
+                      // onChange={(selectedOption) => {
+                      //   setSelectedPart(selectedOption);
+                      //   selectedPartRef.current.value = selectedOption.value; // Cập nhật giá trị vào biến ref
+                      // }}
+                    />
                   </div>
 
                   <br />
                   <div>
-                    <select>
-                      <option value="">Chức vụ</option>
-                      {/* Điền tùy chọn chức vụ ở đây */}
-                    </select>
+                    <Select
+                      options={positionOptions}
+                      isClearable={true}
+                      value={selectedPosition}
+                      placeholder="Chức vụ"
+                      // onChange={(selectedOption) => {
+                      //   setSelectedPart(selectedOption);
+                      //   selectedPartRef.current.value = selectedOption.value; // Cập nhật giá trị vào biến ref
+                      // }}
+                    />
                   </div>
+                  <button
+                    className="ok-filter"
+                    onClick={getpersonnelFiltleApi()}
+                  >
+                    OK
+                  </button>
                 </div>
               )}
               <div className={styles.staffInfo}>
