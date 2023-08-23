@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Search from "../../components/search/Search";
 import StaffInfo from "../../components/StaffInfo";
@@ -18,6 +18,7 @@ export default function Staff() {
   const navigate = useNavigate();
   const [personnelData, setpersonnelData] = useState([]);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const personnelCodeRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 6;
   const token = localStorage.getItem("token");
@@ -45,6 +46,46 @@ export default function Staff() {
 
   const [selectedPart, setSelectedPart] = useState("");
   const [selectedPosition, setSelectedPosition] = useState("");
+
+  const getpersonnelSearchApi = async (page) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Access-Control-Allow-Origin", `${localUrl}`);
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const queryParams = new URLSearchParams({
+      // page: currentPage - 1, // Trang bắt đầu từ 0
+      // size: recordsPerPage,
+    });
+
+    var raw = JSON.stringify({
+      personnelCode: personnelCodeRef?.current?.value,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${url}/personnel/management/search?${queryParams.toString()}`,
+        requestOptions
+      );
+      const result = await response.json();
+      const data = result?.data?.content;
+      setpersonnelData(data);
+      console.log(data);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   getpersonnelSearchApi(currentPage);
+  // }, [currentPage]);
 
   const getpersonnelApi = async (page) => {
     var myHeaders = new Headers();
@@ -118,9 +159,13 @@ export default function Staff() {
                     <FontAwesomeIcon icon={faSearch} className="searchIcon" />
                   </i>
                   <input
+                    ref={personnelCodeRef}
                     className="inputSearch"
                     type="text"
                     placeholder="Tìm kiếm..."
+                    onKeyPress={() => {
+                      getpersonnelSearchApi();
+                    }}
                   />
                 </div>
 

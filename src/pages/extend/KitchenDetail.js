@@ -3,12 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
+import { Button, Container, Modal, Tooltip } from "react-bootstrap";
 
 export default function KitchenDetail() {
   const params = useParams();
   const kitchenCode = params.kitchenCode;
   const navigate = useNavigate();
   const [kitchenDetailData, setKitchenDetailData] = useState([]);
+  const [showDel, setshowDel] = useState(false);
+  const [deleteCode, setdeleteCode] = useState("");
   const token = localStorage.getItem("token");
   useEffect(() => {
     getKitchenDetailApi();
@@ -51,12 +54,83 @@ export default function KitchenDetail() {
       state: kitchenDetailData,
     });
   };
+
+  const handleClose = () => {
+    setshowDel(false);
+  };
+
+  const handleClickDelete = (code) => {
+    setdeleteCode(code);
+    setshowDel(true);
+    // console.log("id...", id);
+  };
+
+  const handleDelete = async () => {
+    const token = localStorage.getItem("token");
+    console.log("token", token);
+    var myHeaders = new Headers();
+    myHeaders.append("kitchenCode", `${kitchenCode}`);
+    // myHeaders.append("removeType", "REMOVE");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${url}/kitchen/management/remove`,
+        requestOptions
+      );
+      const result = await response.text();
+      console.log(result);
+      navigate(-1); // Chuyển hướng sau khi tạo thành công
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
   const gotoKitchenStaff = (kitchenCode) => {
     navigate("/kitchenStaffDetail/" + kitchenCode);
   };
   return (
     // <div className="container">
     <div className="staffDetail">
+      <div>
+        <Modal show={showDel} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Xác nhận xóa</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Bạn có chắc chắn muốn xóa?</Modal.Body>
+          <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              style={{
+                backgroundColor: "#baeaff",
+                border: "none",
+                color: "black",
+              }}
+              // onClick={() => handleDelete(item?.id)
+              onClick={handleDelete}
+              // }
+            >
+              Chắc chắn
+            </Button>
+            <Button
+              style={{
+                backgroundColor: "#ffbacf",
+                border: "none",
+                color: "black",
+              }}
+              onClick={handleClose}
+            >
+              Không
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
       <div className="detail-header">
         <div
           className="back-button-header"
@@ -102,7 +176,14 @@ export default function KitchenDetail() {
               </button>
             </div>
             <div className="btn-detail delete-button">
-              <button className="btn btn-primary">Xóa</button>
+              <button
+                className="btn btn-primary"
+                onClick={() =>
+                  handleClickDelete(kitchenDetailData?.personnelCode)
+                }
+              >
+                Xóa
+              </button>
             </div>
             <div className="btn-detail account-button">
               <button
