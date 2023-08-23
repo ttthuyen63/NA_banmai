@@ -65,6 +65,26 @@ export default function KitchenStaffDetail() {
     navigate("/staffDetail/" + code);
     console.log("code", code);
   };
+
+  const [hoverTextPosition, setHoverTextPosition] = useState({ x: 0, y: 0 });
+  const [showHoverText, setShowHoverText] = useState(false);
+  const handleMouseEnter = (e) => {
+    setShowHoverText(true);
+  };
+  const handleMouseLeave = () => {
+    setShowHoverText(false);
+  };
+
+  const handleMouseMove = (e) => {
+    const offsetX = 20;
+    const offsetY = 20;
+
+    setHoverTextPosition({
+      x: e.clientX + offsetX,
+      y: e.clientY + offsetY,
+    });
+  };
+
   return (
     <div>
       <div className="header-kitchen-staff">
@@ -89,7 +109,27 @@ export default function KitchenStaffDetail() {
       <div className={styles.staffInfo}>
         {kitchenStaffData?.map((item, index) => (
           <div className={styles.infoBox}>
-            <h4 className="info-title">{item?.personnelCode}</h4>
+            <h4
+              className={styles.titleInfo}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onMouseMove={handleMouseMove}
+              onClick={() => goToDetail(item?.personnelCode)}
+            >
+              {item?.personnelCode}
+            </h4>
+            {showHoverText && (
+              <span
+                className={styles.hoverText}
+                style={{
+                  position: "fixed",
+                  top: hoverTextPosition.y,
+                  left: hoverTextPosition.x,
+                }}
+              >
+                Xem chi tiết
+              </span>
+            )}
             <table>
               <tbody>
                 <tr>
@@ -115,12 +155,12 @@ export default function KitchenStaffDetail() {
                 </tr>
               </tbody>
             </table>
-            <div
+            {/* <div
               className={styles.btnDetail}
               onClick={() => goToDetail(item?.personnelCode)}
             >
               <button>Xem chi tiết</button>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>

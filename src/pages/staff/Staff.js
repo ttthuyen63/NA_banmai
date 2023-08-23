@@ -251,29 +251,31 @@ export default function Staff() {
                       </button>
                     </div> */}
                     <table>
-                      <tbody>
-                        <tr>
-                          <th>Họ và tên:</th>
-                          <td>{item?.fullName}</td>
-                        </tr>
-                        <tr>
-                          <th>Ngày sinh:</th>
-                          <td>{item?.birthDate}</td>
-                        </tr>
-                        <tr>
-                          <th>Bộ phận:</th>
-                          <td>
-                            <Options part={item?.part} />
-                          </td>
-                          {/* <td>{item?.part}</td> */}
-                        </tr>
-                        <tr>
-                          <th>Chức vụ:</th>
-                          <td>
-                            <Options position={item?.position} />
-                          </td>
-                        </tr>
-                      </tbody>
+                      <div>
+                        <tbody>
+                          <tr>
+                            <th>Họ và tên:</th>
+                            <td>{item?.fullName}</td>
+                          </tr>
+                          <tr>
+                            <th>Ngày sinh:</th>
+                            <td>{item?.birthDate}</td>
+                          </tr>
+                          <tr>
+                            <th>Bộ phận:</th>
+                            <td>
+                              <Options part={item?.part} />
+                            </td>
+                            {/* <td>{item?.part}</td> */}
+                          </tr>
+                          <tr>
+                            <th>Chức vụ:</th>
+                            <td>
+                              <Options position={item?.position} />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </div>
                     </table>
                     {/* <div
                       className={styles.btnDetail}

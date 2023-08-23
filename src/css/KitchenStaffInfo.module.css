@@ -7,8 +7,31 @@
   /* max-width: 1000px;  */
 }
 
+.titleInfo {
+  position: relative;
+}
+
+.hoverText {
+  background-color: #f0f0f0;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.infoBox:hover .hoverText {
+  display: block;
+}
+
+.infoBox:hover .hoverText:hover {
+  cursor: pointer;
+}
+
+.titleInfo:hover {
+  cursor: pointer;
+}
+
 .infoBox {
-  flex-basis: calc(30% - 5px); /* Chia cột thành 50% với khoảng cách 10px */
+  flex-basis: calc(32% - 1px);
   padding: 5px;
   border: 1px solid #b1d3fe;
   box-sizing: border-box;
