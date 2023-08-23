@@ -2,17 +2,40 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   padding: 20px 40px;
   /* max-width: 1000px;  */
 }
 
 .infoBox {
-  flex-basis: calc(30% - 5px); /* Chia cột thành 50% với khoảng cách 10px */
+  flex-basis: calc(32% - 3px); /* Chia cột thành 50% với khoảng cách 10px */
   padding: 5px;
   border: 1px solid #b1d3fe;
   box-sizing: border-box;
   border-radius: 12px;
+}
+
+.titleInfo {
+  position: relative;
+}
+
+.hoverText {
+  background-color: #f0f0f0;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.infoBox:hover .hoverText {
+  display: block;
+}
+
+.infoBox:hover .hoverText:hover {
+  cursor: pointer;
+}
+
+.titleInfo:hover {
+  cursor: pointer;
 }
 
 h4 {

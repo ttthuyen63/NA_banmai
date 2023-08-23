@@ -73,6 +73,26 @@ export default function KitchenManage() {
     console.log("Back button clicked");
   };
   console.log("currentPage", currentPage);
+
+  const [hoverTextPosition, setHoverTextPosition] = useState({ x: 0, y: 0 });
+  const [showHoverText, setShowHoverText] = useState(false);
+  const handleMouseEnter = (e) => {
+    setShowHoverText(true);
+  };
+  const handleMouseLeave = () => {
+    setShowHoverText(false);
+  };
+
+  const handleMouseMove = (e) => {
+    const offsetX = 20;
+    const offsetY = 20;
+
+    setHoverTextPosition({
+      x: e.clientX + offsetX,
+      y: e.clientY + offsetY,
+    });
+  };
+
   return (
     <div className="content">
       <div className="header-kitchen">
@@ -85,15 +105,29 @@ export default function KitchenManage() {
           >
             <FontAwesomeIcon icon={faChevronLeft} />
           </div>
-          <input
+          <div className="searchContainer">
+            <i>
+              <FontAwesomeIcon icon={faSearch} className="searchIcon" />
+            </i>
+            <input
+              // ref={personnelCodeRef}
+              className="inputSearch"
+              type="text"
+              placeholder="Tìm kiếm..."
+              // onKeyPress={() => {
+              //   getpersonnelSearchApi();
+              // }}
+            />
+          </div>
+          {/* <input
             type="text"
             className="header_kitchen_search-input"
             placeholder="Search Data"
-          />
+          /> */}
         </div>
-
-        <span>Quản lý bếp</span>
-
+        <div className="header_kitchen_center">
+          <span>Quản lý bếp</span>
+        </div>
         <div className="header_kitchen_right">
           <button
             className="header_kitchen_create-button"
@@ -110,7 +144,27 @@ export default function KitchenManage() {
         <div className={styles.staffInfo}>
           {kitchenData?.map((item, index) => (
             <div className={styles.infoBox}>
-              <h4 className="info-title">{item?.kitchenCode}</h4>
+              <h4
+                className={styles.titleInfo}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseMove={handleMouseMove}
+                onClick={() => goToDetail(item?.kitchenCode)}
+              >
+                {item?.kitchenCode}
+              </h4>
+              {showHoverText && (
+                <span
+                  className={styles.hoverText}
+                  style={{
+                    position: "fixed",
+                    top: hoverTextPosition.y,
+                    left: hoverTextPosition.x,
+                  }}
+                >
+                  Xem chi tiết
+                </span>
+              )}
               <table>
                 <tbody>
                   <tr>
@@ -123,12 +177,12 @@ export default function KitchenManage() {
                   </tr>
                 </tbody>
               </table>
-              <div
+              {/* <div
                 className={styles.btnDetail}
                 onClick={() => goToDetail(item?.kitchenCode)}
               >
                 <button>Xem chi tiết</button>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

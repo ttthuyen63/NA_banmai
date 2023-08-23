@@ -137,6 +137,25 @@ export default function Staff() {
     navigate("/createStaff");
   };
 
+  const [hoverTextPosition, setHoverTextPosition] = useState({ x: 0, y: 0 });
+  const [showHoverText, setShowHoverText] = useState(false);
+  const handleMouseEnter = (e) => {
+    setShowHoverText(true);
+  };
+  const handleMouseLeave = () => {
+    setShowHoverText(false);
+  };
+
+  const handleMouseMove = (e) => {
+    const offsetX = 20;
+    const offsetY = 20;
+
+    setHoverTextPosition({
+      x: e.clientX + offsetX,
+      y: e.clientY + offsetY,
+    });
+  };
+
   return (
     <>
       <div className="row">
@@ -205,10 +224,25 @@ export default function Staff() {
                     {/* <div> */}
                     <h4
                       className={styles.titleInfo}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                      onMouseMove={handleMouseMove}
                       onClick={() => goToDetail(item?.personnelCode)}
                     >
                       {item?.personnelCode}
                     </h4>
+                    {showHoverText && (
+                      <span
+                        className={styles.hoverText}
+                        style={{
+                          position: "fixed",
+                          top: hoverTextPosition.y,
+                          left: hoverTextPosition.x,
+                        }}
+                      >
+                        Xem chi tiết
+                      </span>
+                    )}
                     {/* <button
                         className={styles.btnDetail}
                         onClick={() => goToDetail(item?.personnelCode)}

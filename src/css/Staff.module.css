@@ -3,17 +3,42 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px;
+  padding: 24px;
+  position: relative;
   /* max-width: 1000px;  */
 }
 
+.titleInfo {
+  position: relative;
+}
+
+.hoverText {
+  background-color: #f0f0f0;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.infoBox:hover .hoverText {
+  display: block;
+}
+
+.infoBox:hover .hoverText:hover {
+  cursor: pointer;
+}
+
+.your-div:hover .hover-text {
+  display: none;
+}
+
 .infoBox {
-  flex-basis: calc(49% - 1px); /* Chia cột thành 50% với khoảng cách 10px */
+  flex-basis: calc(49%); /* Chia cột thành 50% với khoảng cách 10px */
   /* padding: 5px; */
   /* margin-bottom: 20px; */
   border: 1px solid #b1d3fe;
   box-sizing: border-box;
   border-radius: 12px;
+  position: relative;
 }
 
 h4 {

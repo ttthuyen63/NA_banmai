@@ -11,7 +11,7 @@
 
 .searchContainer {
   position: relative;
-  width: 500px;
+  width: 400px;
 }
 .btnSelect {
   width: 200px;
@@ -22,7 +22,7 @@
 }
 .inputSearch {
   padding-left: 30px; /* Để tạo khoảng trống cho biểu tượng */
-  width: 500px;
+  width: 400px;
   height: 40px;
   border: 1px solid #ccc;
   border-radius: 50px;
