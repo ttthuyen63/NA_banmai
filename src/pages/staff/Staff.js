@@ -13,6 +13,7 @@ import {
   faChevronRight,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
+import Options from "../../components/Options";
 
 export default function Staff() {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ export default function Staff() {
 
   const getpersonnelSearchApi = async (page) => {
     var myHeaders = new Headers();
-    myHeaders.append("Access-Control-Allow-Origin", `${localUrl}`);
+    myHeaders.append("Origin", `${localUrl}`);
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -201,7 +202,20 @@ export default function Staff() {
               <div className={styles.staffInfo}>
                 {personnelData?.map((item, index) => (
                   <div className={styles.infoBox}>
-                    <h4 className="info-title">{item?.personnelCode}</h4>
+                    {/* <div> */}
+                    <h4
+                      className={styles.titleInfo}
+                      onClick={() => goToDetail(item?.personnelCode)}
+                    >
+                      {item?.personnelCode}
+                    </h4>
+                    {/* <button
+                        className={styles.btnDetail}
+                        onClick={() => goToDetail(item?.personnelCode)}
+                      >
+                        Xem chi tiết
+                      </button>
+                    </div> */}
                     <table>
                       <tbody>
                         <tr>
@@ -214,20 +228,25 @@ export default function Staff() {
                         </tr>
                         <tr>
                           <th>Bộ phận:</th>
-                          <td>{item?.part}</td>
+                          <td>
+                            <Options part={item?.part} />
+                          </td>
+                          {/* <td>{item?.part}</td> */}
                         </tr>
                         <tr>
                           <th>Chức vụ:</th>
-                          <td>{item?.position}</td>
+                          <td>
+                            <Options position={item?.position} />
+                          </td>
                         </tr>
                       </tbody>
                     </table>
-                    <div
+                    {/* <div
                       className={styles.btnDetail}
                       onClick={() => goToDetail(item?.personnelCode)}
                     >
                       <button>Xem chi tiết</button>
-                    </div>
+                    </div> */}
                   </div>
                 ))}
               </div>

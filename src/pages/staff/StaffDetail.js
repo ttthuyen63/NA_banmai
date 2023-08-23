@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
 import { currencyFormat } from "../../ultils/constant";
 import { Button, Container, Modal, Tooltip } from "react-bootstrap";
+import Options from "../../components/Options";
 
 export default function StaffDetail() {
   const params = useParams();
@@ -130,7 +131,7 @@ export default function StaffDetail() {
     if (accountByCodelData == null) {
       navigate("/emptyAccount");
     } else {
-      navigate("/account" + code);
+      navigate("/account/" + code);
     }
     //
   };
@@ -202,11 +203,15 @@ export default function StaffDetail() {
                   </tr>
                   <tr>
                     <th>Bộ phận:</th>
-                    <td>{personnelDetailData?.part}</td>
+                    <td>
+                      <Options part={personnelDetailData?.part} />
+                    </td>
                   </tr>
                   <tr>
                     <th>Chức vụ:</th>
-                    <td>{personnelDetailData?.position}</td>
+                    <td>
+                      <Options position={personnelDetailData?.position} />
+                    </td>
                   </tr>
                   <tr>
                     <th>Ngày vào làm:</th>
@@ -219,7 +224,7 @@ export default function StaffDetail() {
                   {personnelDetailData?.part === "KITCHEN" ? (
                     <tr>
                       <th>Mã bếp:</th>
-                      <td>BEP1</td>
+                      <td>{personnelDetailData?.kitchenCode}</td>
                     </tr>
                   ) : (
                     ""
@@ -252,16 +257,21 @@ export default function StaffDetail() {
                 Xóa nhân viên
               </button>
             </div>
-            <div className="btn-detail account-button">
-              <button
-                onClick={() => {
-                  gotoAccount(personnelDetailData?.personnelCode);
-                }}
-                className="btn btn-primary"
-              >
-                Tài khoản
-              </button>
-            </div>
+            {personnelDetailData?.part === "KITCHEN" &&
+            personnelDetailData?.position === "PERSONNEL" ? (
+              ""
+            ) : (
+              <div className="btn-detail account-button">
+                <button
+                  onClick={() => {
+                    gotoAccount(personnelDetailData?.personnelCode);
+                  }}
+                  className="btn btn-primary"
+                >
+                  Tài khoản
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

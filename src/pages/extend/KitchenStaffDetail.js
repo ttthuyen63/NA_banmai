@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import styles from "../../css/KitchenStaffInfo.module.css";
 import KitchenStaffInfo from "../../components/KitchenStaffInfo";
 import { url } from "../../config/api";
+import Options from "../../components/Options";
 
 export default function KitchenStaffDetail() {
   const navigate = useNavigate();
@@ -101,11 +102,16 @@ export default function KitchenStaffDetail() {
                 </tr>
                 <tr>
                   <th>Bộ phận:</th>
-                  <td>{item?.part}</td>
+                  {/* <td>{item?.part}</td> */}
+                  <td>
+                    <Options part={item?.part} />
+                  </td>
                 </tr>
                 <tr>
                   <th>Chức vụ:</th>
-                  <td>{item?.position}</td>
+                  <td>
+                    <Options position={item?.position} />
+                  </td>
                 </tr>
               </tbody>
             </table>

@@ -1,61 +1,58 @@
 * {
-margin: 0;
+  margin: 0;
   padding: 0;
 }
 
-.LoginContainer{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 75vh;
+.LoginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75vh;
 }
 
 .LoginForm {
-    width: 75%;
-    text-align: center;
+  width: 75%;
+  text-align: center;
 }
 
-.inputContainer{
-    width: 75%;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    outline: none;
+.inputContainer {
+  width: 75%;
+  padding: 15px;
+  margin-bottom: 26px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  outline: none;
 }
 
 .inputContainer::placeholder {
-    color: #aaa;
-  }
+  color: #aaa;
+}
 
-  .btnLogin {
-    width: 75%;
-    padding: 10px 20px;
-    background-color: #baeaff;
-    font-size:medium;
-    font-weight: bold;
-    color: black;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    border-radius: 15px;
-    margin-top: 30px;
+.btnLogin {
+  width: 50%;
+  padding: 10px 10px;
+  background-color: #baeaff;
+  font-size: medium;
+  font-weight: bold;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  border-radius: 50px;
+}
 
-  }
-  
-  .btnLogin:hover {
-    background-color: #1f80f0;
-  }
+.btnLogin:hover {
+  background-color: #1f80f0;
+}
 
-  .forgotPass{
-    margin-top: 10px;
+.forgotPass {
+  margin-top: 26px;
+}
 
-  }
-  
-  .forgotPass a{
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    color: #3c90fc;
-    font-weight:500;
-  }
+.forgotPass a {
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  color: #3c90fc;
+  font-weight: 500;
+}

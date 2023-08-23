@@ -91,9 +91,9 @@ export default function KitchenManage() {
             placeholder="Search Data"
           />
         </div>
-        <div className="header_kitchen_center">
-          <span>Quản lý bếp</span>
-        </div>
+
+        <span>Quản lý bếp</span>
+
         <div className="header_kitchen_right">
           <button
             className="header_kitchen_create-button"

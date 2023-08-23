@@ -11,7 +11,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState();
+  const [error, setError] = useState(false);
   const token = useSelector((state) => state.userReducer.token);
   const submit = async () => {
     try {
@@ -38,7 +38,7 @@ export default function Login() {
       navigate("/");
       console.log("token", accessToken);
     } catch (error) {
-      setError("username hoặc mật khẩu không đúng!");
+      setError(true);
     }
   };
 
@@ -53,6 +53,13 @@ export default function Login() {
       {token !== null ? null : (
         <div className={styles.LoginContainer}>
           <div className={styles.LoginForm}>
+            {error ? (
+              <div style={{ marginBottom: "26px", color: "red" }}>
+                Username hoặc mật khẩu không đúng!{" "}
+              </div>
+            ) : (
+              ""
+            )}
             <div>
               <input
                 className={styles.inputContainer}
@@ -72,10 +79,10 @@ export default function Login() {
               />
             </div>
             <button className={styles.btnLogin} onClick={() => submit()}>
-              Login
+              Đăng nhập
             </button>
             <div className={styles.forgotPass}>
-              <a href="#">Forgot Password?</a>
+              <a href="#">Quên mật khẩu</a>
             </div>
           </div>
         </div>

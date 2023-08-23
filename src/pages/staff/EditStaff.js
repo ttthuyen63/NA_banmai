@@ -4,6 +4,15 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
 import Select from "react-select";
+import { Button, Container, Modal, Tooltip } from "react-bootstrap";
+
+const customStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    padding: "4px",
+    borderRadius: "8px",
+  }),
+};
 
 export default function EditStaff() {
   const navigate = useNavigate();
@@ -11,6 +20,7 @@ export default function EditStaff() {
   const personnelCode = params.personnelCode;
   const { ...stateLocation } = useLocation();
   const itemDetail = stateLocation?.state;
+  const [error, setError] = useState(false);
 
   const { kitchenCode, fullName, isOutOfWord, startDate, ...newObject } =
     itemDetail;
@@ -34,6 +44,7 @@ export default function EditStaff() {
   const [personnel_code, setpersonnel_code] = useState(
     itemDetail?.personnelCode
   );
+  const [showConfirm, setshowConfirm] = useState(false);
 
   useEffect(() => {
     setfirstName(splittedStrings[0] || "");
@@ -53,8 +64,8 @@ export default function EditStaff() {
   const data = {
     parts: [
       { key: "KITCHEN", value: "Bếp" },
-      { key: "HR", value: "Human Resources" },
-      { key: "MANAGEMENT", value: "Hành chính" },
+      { key: "HR", value: "Hành chính" },
+      { key: "MANAGEMENT", value: "Quản lý" },
     ],
     positions: [
       { key: "PERSONNEL", value: "Nhân viên" },
@@ -80,7 +91,7 @@ export default function EditStaff() {
   console.log("newObject", newObject);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     const token = localStorage.getItem("token");
     console.log("token", token);
     var myHeaders = new Headers();
@@ -94,7 +105,7 @@ export default function EditStaff() {
         basicSalary: basicSalary,
         birthDate: birthDate,
         firstName: firstName,
-        kitchenCode: kitchenCode,
+        kitchenCode: kitchen_code,
         lastName: lastName,
         midName: midName,
         part: part,
@@ -124,15 +135,59 @@ export default function EditStaff() {
         `${url}/personnel/management/update`,
         requestOptions
       );
-      const result = await response.text();
-      console.log(result);
-      navigate("/");
+      if (!response.ok) {
+        // Nếu response không thành công, set state error và thông báo lỗi
+        setError(true);
+        setshowConfirm(false);
+      } else {
+        const result = await response.text();
+        console.log(result);
+        navigate(-1);
+      }
     } catch (error) {
-      console.log("Error:", error);
+      setError(true);
     }
+  };
+
+  const handleClickConfirm = () => {
+    setshowConfirm(true);
+  };
+
+  const handleClose = () => {
+    setshowConfirm(false);
   };
   return (
     <div className="staffDetail">
+      <Modal show={showConfirm} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận chỉnh sửa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Bạn có chắc chắn muốn chỉnh sửa?</Modal.Body>
+        <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{
+              backgroundColor: "#baeaff",
+              border: "none",
+              color: "black",
+            }}
+            // onClick={() => handleDelete(item?.id)
+            onClick={handleSubmit}
+            // }
+          >
+            Chắc chắn
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#ffbacf",
+              border: "none",
+              color: "black",
+            }}
+            onClick={handleClose}
+          >
+            Không
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="detail-header">
         <div
           className="back-button-header"
@@ -172,28 +227,27 @@ export default function EditStaff() {
                 </div>
                 <div className="edit form-group">
                   <label>Bộ phận:</label>
-                  {/* <input
-                    type="text"
-                    value={part}
-                    onChange={(e) => setpart(e.target.value)}
-                  /> */}
-                  <Select
-                    options={partOptions}
-                    isClearable={true}
-                    value={
-                      part === "KITCHEN"
-                        ? { value: "KITCHEN", label: "Bếp" }
-                        : partOptions.find((option) => option.value === part)
-                    }
-                    onChange={(selectedOption) => {
-                      if (selectedOption?.value === "KITCHEN") {
-                        setpart("KITCHEN");
-                        setkitchen_code(""); // Reset mã bếp khi chọn "KITCHEN"
-                      } else {
-                        setpart(selectedOption?.value);
+                  <div className="edit-select">
+                    <Select
+                      styles={customStyles}
+                      className="select-option"
+                      options={partOptions}
+                      isClearable={true}
+                      value={
+                        part === "KITCHEN"
+                          ? { value: "KITCHEN", label: "Bếp" }
+                          : partOptions.find((option) => option.value === part)
                       }
-                    }}
-                  />
+                      onChange={(selectedOption) => {
+                        if (selectedOption?.value === "KITCHEN") {
+                          setpart("KITCHEN");
+                          setkitchen_code(""); // Reset mã bếp khi chọn "KITCHEN"
+                        } else {
+                          setpart(selectedOption?.value);
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
                 {part === "KITCHEN" && ( // Hiển thị input mã bếp nếu chọn "Bếp"
                   <div className="create form-group">
@@ -239,19 +293,45 @@ export default function EditStaff() {
                   />
                 </div>
                 <div className="edit form-group">
-                  <label>Chức vụ:</label>
+                  {/* <label>Chức vụ:</label>
                   <input
                     type="text"
                     value={position}
                     onChange={(e) => setposition(e.target.value)}
-                  />
+                  /> */}
+                  <label>Chức vụ:</label>
+                  <div className="edit-select">
+                    <Select
+                      styles={customStyles}
+                      className="select-option"
+                      options={positionOptions}
+                      isClearable={true}
+                      value={positionOptions.find(
+                        (option) => option.value === position
+                      )}
+                      onChange={(e) => setposition(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             </form>
           </div>
+          {error ? (
+            <div
+              style={{
+                marginBottom: "26px",
+                color: "red",
+                textAlign: "center",
+              }}
+            >
+              Thông tin bạn nhập vào không hợp lệ!{" "}
+            </div>
+          ) : (
+            ""
+          )}
           <div className="edit-btn-submit">
             <button
-              onClick={handleSubmit}
+              onClick={() => handleClickConfirm()}
               type="submit"
               style={{ width: "25%" }}
               className="btn btn-primary"
