@@ -21,14 +21,22 @@ export default function Staff() {
   const [personnelData, setpersonnelData] = useState([]);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const personnelCodeRef = useRef(null);
+  const personnelNameRef = useRef(null);
+  const selectedPartRef = useRef(null);
+  const selectedPositionRef = useRef(null);
+  const [searchApiCalled, setSearchApiCalled] = useState(false);
+  const [filterApiCalled, setFilterApiCalled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [displayedData, setDisplayedData] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+
   const recordsPerPage = 6;
   const token = localStorage.getItem("token");
   const data = {
     parts: [
       { key: "KITCHEN", value: "Bếp" },
-      { key: "HR", value: "Human Resources" },
-      { key: "MANAGEMENT", value: "Hành chính" },
+      { key: "HR", value: "Hành chính" },
+      { key: "MANAGEMENT", value: "Quản lý" },
     ],
     positions: [
       { key: "PERSONNEL", value: "Nhân viên" },
@@ -50,6 +58,8 @@ export default function Staff() {
   const [selectedPosition, setSelectedPosition] = useState("");
 
   const getpersonnelSearchApi = async (page) => {
+    setSearchApiCalled(true);
+    setFilterApiCalled(false);
     var myHeaders = new Headers();
     myHeaders.append("Origin", `${localUrl}`);
     myHeaders.append("Content-Type", "application/json");
@@ -62,6 +72,7 @@ export default function Staff() {
 
     var raw = JSON.stringify({
       personnelCode: personnelCodeRef?.current?.value,
+      name: personnelNameRef?.current?.value,
     });
 
     var requestOptions = {
@@ -78,14 +89,22 @@ export default function Staff() {
       );
       const result = await response.json();
       const data = result?.data?.content;
-      setpersonnelData(data);
+      const startIndex = (currentPage - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      const slicedData = data.slice(startIndex, endIndex);
+
+      setpersonnelData(slicedData);
+      setDisplayedData(slicedData);
+      setTotalRecords(result?.data?.totalElements);
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
     }
   };
 
-  const getpersonnelFiltleApi = async (page) => {
+  const getpersonnelFilterApi = async (page) => {
+    setFilterApiCalled(true);
+    setSearchApiCalled(false);
     var myHeaders = new Headers();
     myHeaders.append("Origin", `${localUrl}`);
     myHeaders.append("Content-Type", "application/json");
@@ -115,16 +134,29 @@ export default function Staff() {
       );
       const result = await response.json();
       const data = result?.data?.content;
-      setpersonnelData(data);
+      const startIndex = (currentPage - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      const slicedData = data.slice(startIndex, endIndex);
+
+      setpersonnelData(slicedData);
+      setDisplayedData(slicedData);
+      setTotalRecords(result?.data?.totalElements);
+      setShowAdvancedSearch(false);
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
     }
   };
 
-  // useEffect(() => {
-  //   getpersonnelSearchApi(currentPage);
-  // }, [currentPage]);
+  useEffect(() => {
+    if (searchApiCalled) {
+      getpersonnelSearchApi(currentPage);
+    } else if (filterApiCalled) {
+      getpersonnelFilterApi(currentPage);
+    } else {
+      getpersonnelApi(currentPage);
+    }
+  }, [currentPage, searchApiCalled, filterApiCalled]);
 
   const getpersonnelApi = async (page) => {
     var myHeaders = new Headers();
@@ -154,15 +186,12 @@ export default function Staff() {
       const result = await response.json();
       const data = result?.data?.content;
       setpersonnelData(data);
+      setTotalRecords(result?.data?.totalElements);
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
     }
   };
-
-  useEffect(() => {
-    getpersonnelApi(currentPage);
-  }, [currentPage]);
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
@@ -173,6 +202,15 @@ export default function Staff() {
   };
   const gotoCreateStaff = () => {
     navigate("/createStaff");
+  };
+
+  const handleDeleteFilter = () => {
+    setShowAdvancedSearch(false);
+    setSelectedPart(null);
+    setSelectedPosition(null);
+    setSearchApiCalled(false);
+    setFilterApiCalled(false);
+    getpersonnelApi(currentPage);
   };
 
   const [hoverTextPosition, setHoverTextPosition] = useState({ x: 0, y: 0 });
@@ -193,6 +231,10 @@ export default function Staff() {
       y: e.clientY + offsetY,
     });
   };
+
+  console.log("currentPage ", currentPage);
+  console.log("recordsPerPage  ", recordsPerPage);
+  console.log("totalRecords   ", totalRecords);
 
   return (
     <>
@@ -217,12 +259,20 @@ export default function Staff() {
                     <FontAwesomeIcon icon={faSearch} className="searchIcon" />
                   </i>
                   <input
-                    ref={personnelCodeRef}
+                    ref={personnelCodeRef && personnelNameRef}
                     className="inputSearch"
                     type="text"
                     placeholder="Tìm kiếm..."
-                    onKeyPress={() => {
-                      getpersonnelSearchApi();
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
+                        getpersonnelSearchApi(currentPage);
+                      }
+                    }}
+                    onInput={(event) => {
+                      const inputValue = event.target.value;
+                      if (inputValue.trim() === "") {
+                        getpersonnelApi(currentPage);
+                      }
                     }}
                   />
                 </div>
@@ -234,45 +284,54 @@ export default function Staff() {
                   }}
                 >
                   Thêm
-                  {/* <FontAwesomeIcon icon={faPlus} /> */}
                 </div>
               </div>
             </div>
             <div className="content">
               {showAdvancedSearch && (
                 <div className="advanced-search">
-                  <div>
+                  <div className="filter-part">
                     <Select
                       options={partOptions}
-                      isClearable={true}
                       value={selectedPart}
+                      ref={selectedPartRef}
                       placeholder="Bộ phận"
-                      // onChange={(selectedOption) => {
-                      //   setSelectedPart(selectedOption);
-                      //   selectedPartRef.current.value = selectedOption.value; // Cập nhật giá trị vào biến ref
-                      // }}
+                      onChange={(selectedOption) => {
+                        setSelectedPart(selectedOption);
+                        selectedPartRef.current.value = selectedOption.value; // Cập nhật giá trị vào biến ref
+                      }}
                     />
                   </div>
 
                   <br />
-                  <div>
+                  <div className="filter-position">
                     <Select
                       options={positionOptions}
-                      isClearable={true}
                       value={selectedPosition}
+                      ref={selectedPositionRef}
                       placeholder="Chức vụ"
-                      // onChange={(selectedOption) => {
-                      //   setSelectedPart(selectedOption);
-                      //   selectedPartRef.current.value = selectedOption.value; // Cập nhật giá trị vào biến ref
-                      // }}
+                      onChange={(selectedOption) => {
+                        setSelectedPosition(selectedOption);
+                        selectedPositionRef.current.value =
+                          selectedOption.value; // Cập nhật giá trị vào biến ref
+                      }}
                     />
                   </div>
-                  <button
-                    className="ok-filter"
-                    onClick={getpersonnelFiltleApi()}
-                  >
-                    OK
-                  </button>
+                  <div>
+                    <button
+                      className="ok-filter"
+                      onClick={() => getpersonnelFilterApi(currentPage)}
+                    >
+                      OK
+                    </button>
+                    <button
+                      className="delete-filter"
+                      style={{ backgroundColor: "#ffbacf", color: "black" }}
+                      onClick={() => handleDeleteFilter()}
+                    >
+                      Xóa
+                    </button>
+                  </div>
                 </div>
               )}
               <div className={styles.staffInfo}>
@@ -300,13 +359,7 @@ export default function Staff() {
                         Xem chi tiết
                       </span>
                     )}
-                    {/* <button
-                        className={styles.btnDetail}
-                        onClick={() => goToDetail(item?.personnelCode)}
-                      >
-                        Xem chi tiết
-                      </button>
-                    </div> */}
+
                     <table>
                       <div>
                         <tbody>
@@ -323,7 +376,6 @@ export default function Staff() {
                             <td>
                               <Options part={item?.part} />
                             </td>
-                            {/* <td>{item?.part}</td> */}
                           </tr>
                           <tr>
                             <th>Chức vụ:</th>
@@ -334,40 +386,32 @@ export default function Staff() {
                         </tbody>
                       </div>
                     </table>
-                    {/* <div
-                      className={styles.btnDetail}
-                      onClick={() => goToDetail(item?.personnelCode)}
-                    >
-                      <button>Xem chi tiết</button>
-                    </div> */}
                   </div>
                 ))}
               </div>
               <div className="pagination">
-                <div
-                  className={`back-button-header ${
-                    currentPage === 1 ? "disabled" : ""
-                  }`}
-                  onClick={() => {
-                    if (currentPage > 1) {
-                      setCurrentPage(currentPage - 1);
-                    }
-                  }}
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                </div>
-                <span className="">{currentPage}</span>
+                {currentPage != 1 && (
+                  <div
+                    className="back-button-header"
+                    onClick={() => {
+                      if (currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                  </div>
+                )}
 
-                <div
-                  className={`back-button-header ${
-                    currentPage * recordsPerPage >= personnelData.length
-                      ? "disabled"
-                      : ""
-                  }`}
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                >
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </div>
+                <span className="">{currentPage}</span>
+                {currentPage * recordsPerPage < totalRecords && (
+                  <div
+                    className="back-button-header"
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </div>
+                )}
               </div>
             </div>
           </div>

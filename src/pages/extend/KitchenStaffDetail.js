@@ -17,6 +17,8 @@ export default function KitchenStaffDetail() {
   const [kitchenStaffData, setKitchenStaffData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 6;
+  const [displayedData, setDisplayedData] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
   const token = localStorage.getItem("token");
 
   const getKitchenStaffApi = async (page) => {
@@ -43,7 +45,12 @@ export default function KitchenStaffDetail() {
       );
       const result = await response.json();
       const data = result?.data?.content;
+      const startIndex = (currentPage - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      const slicedData = data.slice(startIndex, endIndex);
       setKitchenStaffData(data);
+      setDisplayedData(slicedData);
+      setTotalRecords(result?.data?.totalElements);
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
@@ -165,30 +172,28 @@ export default function KitchenStaffDetail() {
         ))}
       </div>
       <div className="pagination">
-        <div
-          className={`back-button-header ${
-            currentPage === 1 ? "disabled" : ""
-          }`}
-          onClick={() => {
-            if (currentPage > 1) {
-              setCurrentPage(currentPage - 1);
-            }
-          }}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </div>
+        {currentPage != 1 && (
+          <div
+            className="back-button-header"
+            onClick={() => {
+              if (currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+              }
+            }}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </div>
+        )}
         <span className="">{currentPage}</span>
 
-        <div
-          className={`back-button-header ${
-            currentPage * recordsPerPage >= kitchenStaffData.length
-              ? "disabled"
-              : ""
-          }`}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </div>
+        {currentPage * recordsPerPage < totalRecords && (
+          <div
+            className="back-button-header"
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -135,9 +135,9 @@ export default function CreateStaff() {
                   <div className="select-part">
                     <Select
                       options={partOptions}
-                      isClearable={true}
                       value={selectedPart}
                       ref={selectedPartRef}
+                      placeholder="Bộ phận"
                       onChange={(selectedOption) => {
                         setSelectedPart(selectedOption);
                         selectedPartRef.current.value = selectedOption.value; // Cập nhật giá trị vào biến ref
@@ -190,10 +190,11 @@ export default function CreateStaff() {
                   <label>Chức vụ:</label>
                   <div className="select-part">
                     <Select
+                      // className="select-part"
                       options={positionOptions}
-                      isClearable={true}
                       value={selectedPosition}
                       ref={selectedPositionRef}
+                      placeholder="Chức vụ"
                       onChange={(selectedOption) => {
                         setSelectedPosition(selectedOption);
                         selectedPositionRef.current.value =

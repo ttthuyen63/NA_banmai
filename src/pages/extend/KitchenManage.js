@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Search from "../../components/search/Search";
 import StaffInfo from "../../components/StaffInfo";
 import styles from "../../css/KitchenInfo.module.css";
@@ -10,11 +10,16 @@ import {
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import KitchenInfo from "../../components/KitchenInfo";
-import { url } from "../../config/api";
+import { url, localUrl } from "../../config/api";
 
 export default function KitchenManage() {
   const navigate = useNavigate();
   const [kitchenData, setKitchenData] = useState([]);
+  const kitchenCodeRef = useRef(null);
+  const kitchenNameRef = useRef(null);
+  const [displayedData, setDisplayedData] = useState([]);
+  const [searchApiCalled, setSearchApiCalled] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 9;
   const token = localStorage.getItem("token");
@@ -46,6 +51,51 @@ export default function KitchenManage() {
       const result = await response.json();
       const data = result?.data?.content;
       setKitchenData(data);
+      setTotalRecords(result?.data?.totalElements);
+      console.log(data);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
+  const getkitchenSearchApi = async (page) => {
+    setSearchApiCalled(true);
+    var myHeaders = new Headers();
+    myHeaders.append("Origin", `${localUrl}`);
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const queryParams = new URLSearchParams({
+      // page: currentPage - 1, // Trang bắt đầu từ 0
+      // size: recordsPerPage,
+    });
+
+    var raw = JSON.stringify({
+      kitchenCode: kitchenCodeRef?.current?.value,
+      name: kitchenNameRef?.current?.value,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${url}/kitchen/management/search?${queryParams.toString()}`,
+        requestOptions
+      );
+      const result = await response.json();
+      const data = result?.data?.content;
+      const startIndex = (currentPage - 1) * recordsPerPage;
+      const endIndex = startIndex + recordsPerPage;
+      const slicedData = data.slice(startIndex, endIndex);
+
+      setKitchenData(slicedData);
+      setDisplayedData(slicedData);
+      setTotalRecords(result?.data?.totalElements);
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
@@ -53,8 +103,12 @@ export default function KitchenManage() {
   };
 
   useEffect(() => {
-    getKitchenApi(currentPage);
-  }, [currentPage]);
+    if (searchApiCalled) {
+      getkitchenSearchApi(currentPage);
+    } else {
+      getKitchenApi(currentPage);
+    }
+  }, [currentPage, searchApiCalled]);
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
@@ -110,13 +164,21 @@ export default function KitchenManage() {
               <FontAwesomeIcon icon={faSearch} className="searchIcon" />
             </i>
             <input
-              // ref={personnelCodeRef}
+              ref={kitchenCodeRef && kitchenNameRef}
               className="inputSearch"
               type="text"
               placeholder="Tìm kiếm..."
-              // onKeyPress={() => {
-              //   getpersonnelSearchApi();
-              // }}
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  getkitchenSearchApi(currentPage);
+                }
+              }}
+              onInput={(event) => {
+                const inputValue = event.target.value;
+                if (inputValue.trim() === "") {
+                  getKitchenApi(currentPage);
+                }
+              }}
             />
           </div>
           {/* <input
@@ -187,33 +249,28 @@ export default function KitchenManage() {
           ))}
         </div>
         <div className="pagination">
-          <div
-            className={`back-button-header ${
-              currentPage === 1 ? "disabled" : ""
-            }`}
-            onClick={() => {
-              if (currentPage > 1) {
-                setCurrentPage(currentPage - 1);
-              }
-            }}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </div>
+          {currentPage != 1 && (
+            <div
+              className="back-button-header"
+              onClick={() => {
+                if (currentPage > 1) {
+                  setCurrentPage(currentPage - 1);
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </div>
+          )}
           <span className="">{currentPage}</span>
 
-          <div
-            className={`back-button-header ${
-              currentPage * recordsPerPage >= kitchenData.length
-                ? "disabled"
-                : ""
-            }`}
-            // disabled={currentPage * recordsPerPage >= kitchenData.length}
-            // disabled={endIndex >= kitchenData.length}
-            // className="back-button-header"
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </div>
+          {currentPage * recordsPerPage < totalRecords && (
+            <div
+              className="back-button-header"
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </div>
+          )}
         </div>
       </div>
     </div>

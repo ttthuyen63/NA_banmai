@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
+import { Button, Container, Modal, Tooltip } from "react-bootstrap";
 
 export default function EditKitchen() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function EditKitchen() {
 
   const [name, setname] = useState(itemDetail?.name);
   const [location, setlocation] = useState(itemDetail?.location);
+  const [showConfirm, setshowConfirm] = useState(false);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -57,8 +59,44 @@ export default function EditKitchen() {
       console.log("Error:", error);
     }
   };
+  const handleClickConfirm = () => {
+    setshowConfirm(true);
+  };
+  const handleClose = () => {
+    setshowConfirm(false);
+  };
   return (
     <div className="Detail">
+      <Modal show={showConfirm} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận chỉnh sửa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Bạn có chắc chắn muốn chỉnh sửa?</Modal.Body>
+        <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{
+              backgroundColor: "#baeaff",
+              border: "none",
+              color: "black",
+            }}
+            // onClick={() => handleDelete(item?.id)
+            onClick={handleSubmit}
+            // }
+          >
+            Chắc chắn
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#ffbacf",
+              border: "none",
+              color: "black",
+            }}
+            onClick={handleClose}
+          >
+            Không
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="detail-header">
         <div className="back-button-header" onClick={handleBackClick}>
           <FontAwesomeIcon icon={faChevronLeft} />
@@ -91,7 +129,7 @@ export default function EditKitchen() {
 
               <div className="edit-btn-submit">
                 <button
-                  onClick={handleSubmit}
+                  onClick={() => handleClickConfirm()}
                   type="submit"
                   className="btn btn-primary"
                   style={{ width: "25%" }}

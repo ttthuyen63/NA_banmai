@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 16px;
+  gap: 10px;
   padding: 24px;
   position: relative;
   /* max-width: 1000px;  */
@@ -32,7 +32,7 @@
 } */
 
 .infoBox {
-  flex-basis: calc(49%); /* Chia cột thành 50% với khoảng cách 10px */
+  flex-basis: calc(50% - 5px); /* Chia cột thành 50% với khoảng cách 10px */
   /* padding: 5px; */
   /* margin-bottom: 20px; */
   border: 1px solid #b1d3fe;

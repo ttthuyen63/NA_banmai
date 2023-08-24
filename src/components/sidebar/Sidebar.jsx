@@ -106,7 +106,10 @@ const Sidebar = () => {
                     }`}
                   >
                     <div className="sidebar__menu__item__icon">{item.icon}</div>
-                    <div className="sidebar__menu__item__text">
+                    <div
+                      className="sidebar__menu__item__text"
+                      style={{ textDecoration: "none" }}
+                    >
                       {item.display}
                     </div>
                   </div>
