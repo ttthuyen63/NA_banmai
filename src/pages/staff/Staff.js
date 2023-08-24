@@ -9,12 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { url, localUrl } from "../../config/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBars,
   faChevronLeft,
   faChevronRight,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import Options from "../../components/Options";
 import Select from "react-select";
+import { Modal } from "react-bootstrap";
 
 export default function Staff() {
   const navigate = useNavigate();
@@ -232,21 +234,51 @@ export default function Staff() {
     });
   };
 
-  console.log("currentPage ", currentPage);
-  console.log("recordsPerPage  ", recordsPerPage);
-  console.log("totalRecords   ", totalRecords);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [showSidebarDialog, setShowSidebarDialog] = useState(false);
 
   return (
     <>
       <div className="row">
-        <div className="col-sm-2">
-          <Sidebar />
-        </div>
+        {sidebarVisible && (
+          <div className="col-sm-2">
+            <Sidebar />
+          </div>
+        )}
+        <Modal
+          show={showSidebarDialog}
+          onHide={() => setShowSidebarDialog(false)}
+          dialogClassName="sidebar-dialog"
+          contentClassName="d-flex flex-column"
+          style={{
+            top: 0,
+            left: 0,
+            transform: "none",
+            position: "fixed",
+            margin: 0,
+            width: "40%",
+            height: "85%",
+          }}
+        >
+          <Modal.Body className="p-0">
+            <Sidebar />
+          </Modal.Body>
+        </Modal>
 
-        <div className="col-sm-10">
-          <div className="content">
+        <div
+          className={sidebarVisible ? "content col-sm-10" : "content col-12"}
+        >
+          <div className="content-header">
             <div className="content-header">
               <div className="search">
+                <button
+                  className=" faBars"
+                  onClick={() => {
+                    setShowSidebarDialog(!showSidebarDialog);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faBars} />
+                </button>
                 <button
                   className="btnSelect"
                   onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}

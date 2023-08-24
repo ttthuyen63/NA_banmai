@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import styles from "../../css/Settings.module.css";
 import { useNavigate } from "react-router-dom";
 import { urlAdmin } from "../../config/api";
 import Options from "../../components/Options";
+import { Modal } from "react-bootstrap";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -41,15 +42,47 @@ export default function Settings() {
     }
   };
   console.log("usernameData", usernameData);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [showSidebarDialog, setShowSidebarDialog] = useState(false);
   return (
     <div className="row">
-      <div className="col-sm-2">
-        <Sidebar />
-      </div>
+      {sidebarVisible && (
+        <div className="col-sm-2">
+          <Sidebar />
+        </div>
+      )}
+      <Modal
+        show={showSidebarDialog}
+        onHide={() => setShowSidebarDialog(false)}
+        dialogClassName="sidebar-dialog"
+        contentClassName="d-flex flex-column"
+        style={{
+          top: 0,
+          left: 0,
+          transform: "none",
+          position: "fixed",
+          margin: 0,
+          width: "40%",
+          height: "85%",
+        }}
+      >
+        <Modal.Body className="p-0">
+          <Sidebar />
+        </Modal.Body>
+      </Modal>
 
-      <div className="col-sm-10">
-        <div className="content">
+      {/* <div className="col-sm-10"> */}
+      <div className={sidebarVisible ? "content col-sm-10" : "content col-12"}>
+        <div className="content-header">
           <div className="detail-header">
+            <button
+              className=" faBars"
+              onClick={() => {
+                setShowSidebarDialog(!showSidebarDialog);
+              }}
+            >
+              <FontAwesomeIcon icon={faBars} />
+            </button>
             <div className="title-header">Cài đặt</div>
           </div>
           <div className={styles.contentSetting}>

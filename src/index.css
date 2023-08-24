@@ -6,9 +6,22 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Nếu bạn muốn tránh thanh cuộn */
+}
 
 * {
   text-decoration: none;
+}
+
+.row {
+  display: flex;
+  height: 100%;
 }
 
 code {
@@ -21,6 +34,60 @@ code {
   width: 100%;
   height: 100%;
 }
+
+/* responsive */
+@media (max-width: 900px) {
+  .col-sm-2 {
+    display: none;
+    height: 100%;
+  }
+
+  .faBars {
+    display: block;
+    padding: 7px 10px;
+    border: none;
+    background-color: #644bff;
+    color: white;
+  }
+
+  .content.col-sm-10 {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media (min-width: 901px) {
+  .faBars {
+    display: none; /* Hide the faBars icon */
+  }
+}
+
+/* Custom styles for the sidebar dialog modal */
+.sidebar-dialog {
+  width: 25%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: translate(0, 0);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.modal-content {
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.modal-body {
+  flex: 1;
+  padding: 0;
+  overflow-y: auto;
+}
+
+/* ----------- */
 
 .content-header {
   height: 3rem;
