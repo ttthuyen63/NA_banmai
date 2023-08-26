@@ -28,8 +28,8 @@ export default function CreateStaff() {
   const data = {
     parts: [
       { key: "KITCHEN", value: "Bếp" },
-      { key: "HR", value: "Human Resources" },
-      { key: "MANAGEMENT", value: "Hành chính" },
+      { key: "HR", value: "Nhân sự" },
+      { key: "MANAGEMENT", value: "Quản lý" },
     ],
     positions: [
       { key: "PERSONNEL", value: "Nhân viên" },

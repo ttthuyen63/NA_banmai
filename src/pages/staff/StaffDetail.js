@@ -272,6 +272,17 @@ export default function StaffDetail() {
                 </button>
               </div>
             )}
+
+            <div className="btn-detail attendance-button">
+              <button
+                className="btn btn-primary"
+                // onClick={() =>
+                //   handleClickDelete(personnelDetailData?.personnelCode)
+                // }
+              >
+                Xem bảng công
+              </button>
+            </div>
           </div>
         </div>
       </div>

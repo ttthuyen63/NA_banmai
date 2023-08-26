@@ -250,7 +250,7 @@ export default function EditStaff() {
                   </div>
                 </div>
                 {part === "KITCHEN" && ( // Hiển thị input mã bếp nếu chọn "Bếp"
-                  <div className="create form-group">
+                  <div className="edit form-group">
                     <label>Mã bếp:</label>
                     <input
                       type="text"

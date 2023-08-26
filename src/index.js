@@ -25,6 +25,7 @@ import Settings from "./pages/setting/Settings";
 import store from "./redux/store";
 import ProtectRouter from "./components/ProtectRouter";
 import XuatExcel from "./pages/setting/XuatExcel";
+import ChangePassword from "./pages/setting/ChangePassword";
 
 const router = createBrowserRouter([
   {
@@ -88,6 +89,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectRouter>
         <UpdatePassword />
+      </ProtectRouter>
+    ),
+  },
+  {
+    path: "/changePassword",
+    element: (
+      <ProtectRouter>
+        <ChangePassword />
       </ProtectRouter>
     ),
   },

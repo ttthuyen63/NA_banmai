@@ -16,7 +16,7 @@ export default function KitchenStaffDetail() {
   const kitchenCode = params.kitchenCode;
   const [kitchenStaffData, setKitchenStaffData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 6;
+  const recordsPerPage = 15;
   const [displayedData, setDisplayedData] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const token = localStorage.getItem("token");
@@ -109,91 +109,93 @@ export default function KitchenStaffDetail() {
           Danh sách nhân viên bếp
         </div>
         <div className="header_kitchen-staff_right">
-          <div className="header_kitchen-staff_kitchen-code">Mã bếp</div>
+          {/* <div className="header_kitchen-staff_kitchen-code">Mã bếp</div> */}
           <div className="header_kitchen-staff_kitchen-code">{kitchenCode}</div>
         </div>
       </div>
-      <div className={styles.staffInfo}>
-        {kitchenStaffData?.map((item, index) => (
-          <div className={styles.infoBox}>
-            <h4
-              className={styles.titleInfo}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onMouseMove={handleMouseMove}
-              onClick={() => goToDetail(item?.personnelCode)}
-            >
-              {item?.personnelCode}
-            </h4>
-            {showHoverText && (
-              <span
-                className={styles.hoverText}
-                style={{
-                  position: "fixed",
-                  top: hoverTextPosition.y,
-                  left: hoverTextPosition.x,
-                }}
+      <div className="content-detail">
+        <div className={styles.staffInfo}>
+          {kitchenStaffData?.map((item, index) => (
+            <div className={styles.infoBox}>
+              <h4
+                className={styles.titleInfo}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onMouseMove={handleMouseMove}
+                onClick={() => goToDetail(item?.personnelCode)}
               >
-                Xem chi tiết
-              </span>
-            )}
-            <table>
-              <tbody>
-                <tr>
-                  <th>Họ và tên:</th>
-                  <td>{item?.fullName}</td>
-                </tr>
-                <tr>
-                  <th>Ngày sinh:</th>
-                  <td>{item?.birthDate}</td>
-                </tr>
-                <tr>
-                  <th>Bộ phận:</th>
-                  {/* <td>{item?.part}</td> */}
-                  <td>
-                    <Options part={item?.part} />
-                  </td>
-                </tr>
-                <tr>
-                  <th>Chức vụ:</th>
-                  <td>
-                    <Options position={item?.position} />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            {/* <div
+                {item?.personnelCode}
+              </h4>
+              {showHoverText && (
+                <span
+                  className={styles.hoverText}
+                  style={{
+                    position: "fixed",
+                    top: hoverTextPosition.y,
+                    left: hoverTextPosition.x,
+                  }}
+                >
+                  Xem chi tiết
+                </span>
+              )}
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Họ và tên:</th>
+                    <td>{item?.fullName}</td>
+                  </tr>
+                  <tr>
+                    <th>Ngày sinh:</th>
+                    <td>{item?.birthDate}</td>
+                  </tr>
+                  <tr>
+                    <th>Bộ phận:</th>
+                    {/* <td>{item?.part}</td> */}
+                    <td>
+                      <Options part={item?.part} />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Chức vụ:</th>
+                    <td>
+                      <Options position={item?.position} />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {/* <div
               className={styles.btnDetail}
               onClick={() => goToDetail(item?.personnelCode)}
             >
               <button>Xem chi tiết</button>
             </div> */}
-          </div>
-        ))}
-      </div>
-      <div className="pagination">
-        {currentPage != 1 && (
-          <div
-            className="back-button-header"
-            onClick={() => {
-              if (currentPage > 1) {
-                setCurrentPage(currentPage - 1);
-              }
-            }}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </div>
-        )}
-        <span className="">{currentPage}</span>
+            </div>
+          ))}
+        </div>
+        <div className="pagination">
+          {currentPage != 1 && (
+            <div
+              className="back-button-header"
+              onClick={() => {
+                if (currentPage > 1) {
+                  setCurrentPage(currentPage - 1);
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </div>
+          )}
+          <span className="">{currentPage}</span>
 
-        {currentPage * recordsPerPage < totalRecords && (
-          <div
-            className="back-button-header"
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </div>
-        )}
+          {currentPage * recordsPerPage < totalRecords && (
+            <div
+              className="back-button-header"
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

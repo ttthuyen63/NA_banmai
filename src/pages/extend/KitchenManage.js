@@ -17,11 +17,12 @@ export default function KitchenManage() {
   const [kitchenData, setKitchenData] = useState([]);
   const kitchenCodeRef = useRef(null);
   const kitchenNameRef = useRef(null);
+  const kitchenLocationRef = useRef(null);
   const [displayedData, setDisplayedData] = useState([]);
   const [searchApiCalled, setSearchApiCalled] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 9;
+  const recordsPerPage = 15;
   const token = localStorage.getItem("token");
 
   const getKitchenApi = async (page) => {
@@ -52,7 +53,7 @@ export default function KitchenManage() {
       const data = result?.data?.content;
       setKitchenData(data);
       setTotalRecords(result?.data?.totalElements);
-      console.log(data);
+      console.log(result);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -73,6 +74,7 @@ export default function KitchenManage() {
     var raw = JSON.stringify({
       kitchenCode: kitchenCodeRef?.current?.value,
       name: kitchenNameRef?.current?.value,
+      location: kitchenLocationRef?.current?.value,
     });
 
     var requestOptions = {
@@ -84,7 +86,7 @@ export default function KitchenManage() {
 
     try {
       const response = await fetch(
-        `${url}/kitchen/management/search?${queryParams.toString()}`,
+        `${url}/kitchen/management/search`,
         requestOptions
       );
       const result = await response.json();
@@ -96,7 +98,7 @@ export default function KitchenManage() {
       setKitchenData(slicedData);
       setDisplayedData(slicedData);
       setTotalRecords(result?.data?.totalElements);
-      console.log(data);
+      console.log(result);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -153,6 +155,7 @@ export default function KitchenManage() {
         <div className="header_kitchen_left">
           <div
             className="back-button-header"
+            style={{ paddingLeft: "3px" }}
             onClick={() => {
               handleBackClick();
             }}
@@ -164,7 +167,7 @@ export default function KitchenManage() {
               <FontAwesomeIcon icon={faSearch} className="searchIcon" />
             </i>
             <input
-              ref={kitchenCodeRef && kitchenNameRef}
+              ref={kitchenCodeRef && kitchenNameRef && kitchenLocationRef}
               className="inputSearch"
               type="text"
               placeholder="Tìm kiếm..."

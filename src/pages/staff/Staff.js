@@ -32,7 +32,7 @@ export default function Staff() {
   const [displayedData, setDisplayedData] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
 
-  const recordsPerPage = 6;
+  const recordsPerPage = 15;
   const token = localStorage.getItem("token");
   const data = {
     parts: [
@@ -268,7 +268,7 @@ export default function Staff() {
         <div
           className={sidebarVisible ? "content col-sm-10" : "content col-12"}
         >
-          <div className="content-header">
+          <div className="content">
             <div className="content-header">
               <div className="search">
                 <button
@@ -319,7 +319,7 @@ export default function Staff() {
                 </div>
               </div>
             </div>
-            <div className="content">
+            <div className="content-detail">
               {showAdvancedSearch && (
                 <div className="advanced-search">
                   <div className="filter-part">

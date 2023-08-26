@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -6,11 +6,12 @@ import styles from "../../css/Settings.module.css";
 import { useNavigate } from "react-router-dom";
 import { urlAdmin } from "../../config/api";
 import Options from "../../components/Options";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 export default function Settings() {
   const navigate = useNavigate();
   const [usernameData, setusernameData] = useState([]);
+  const currentPasswordRef = useRef(null);
   const token = localStorage.getItem("token");
   useEffect(() => {
     getusernameDataApi();
@@ -42,10 +43,94 @@ export default function Settings() {
     }
   };
   console.log("usernameData", usernameData);
+
+  const handleSubmit = async (e) => {
+    const token = localStorage.getItem("token");
+    console.log("token", token);
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "currentPassword",
+      `${currentPasswordRef?.current?.value}`
+    );
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `${urlAdmin}/authentication/authenticated/generate/token/change-password`,
+        requestOptions
+      );
+      const result = await response.json();
+      console.log(result.data.changePasswordToken);
+      localStorage.setItem(
+        "tokenChangePassword",
+        result.data.changePasswordToken
+      );
+      navigate("/changePassword");
+    } catch (error) {
+      setError(true);
+      setSubmitError(true);
+    }
+  };
+
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [showSidebarDialog, setShowSidebarDialog] = useState(false);
+
+  const [showDialog, setshowDialog] = useState(false);
+  const handleClose = () => {
+    setshowDialog(false);
+  };
+  const handleClickChangePassword = () => {
+    setshowDialog(true);
+  };
+  const [error, setError] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+
   return (
     <div className="row">
+      <Modal show={showDialog} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Nhập mật khẩu hiện tại</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <input
+              ref={currentPasswordRef}
+              type="password"
+              placeholder="Nhập mật khẩu hiện tại"
+              style={{ width: "100%", padding: "10px", borderRadius: "8px" }}
+            />
+          </div>
+          {submitError ? (
+            <div style={{ marginBottom: "26px", color: "red" }}>
+              Mật khẩu không đúng!{" "}
+            </div>
+          ) : (
+            ""
+          )}
+        </Modal.Body>
+        <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{
+              backgroundColor: "#baeaff",
+              border: "none",
+              color: "black",
+            }}
+            // onClick={() => handleDelete(item?.id)
+            onClick={() => handleSubmit()}
+            // }
+          >
+            Xác nhận
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       {sidebarVisible && (
         <div className="col-sm-2">
           <Sidebar />
@@ -86,7 +171,9 @@ export default function Settings() {
             <div className="title-header">Cài đặt</div>
           </div>
           <div className={styles.contentSetting}>
-            <div className={styles.ContentSettingHeader}>Username</div>
+            <div className={styles.ContentSettingHeader}>
+              {usernameData?.username}
+            </div>
             <div className="row">
               <div className="col-sm-8">
                 <div className={styles.ContentSettingTitle}>Tài khoản</div>
@@ -152,6 +239,7 @@ export default function Settings() {
                 <div
                   className={styles.btnChangePassword}
                   // onClick={() => submit()}
+                  onClick={() => handleClickChangePassword()}
                 >
                   <button>Đổi mật khẩu</button>
                 </div>

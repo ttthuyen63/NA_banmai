@@ -84,7 +84,7 @@ const Sidebar = () => {
     <nav className="sidebar">
       <div className="sidebar-container">
         <div className="sidebar-container">
-          <div className="sidebar__selector">MAIN MENU</div>
+          <div className="sidebar__selector">TRANG CHÍNH</div>
 
           <div ref={sidebarRef} className="sidebar__menu">
             <div
@@ -120,7 +120,7 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="sidebar-container">
-        <div className="sidebar__selector">PREFERENCES</div>
+        <div className="sidebar__selector">CÁ NHÂN</div>
         {sidebarNavItems.slice(-1).map((item, index) => (
           <Link to={item.to} key={index}>
             <div
