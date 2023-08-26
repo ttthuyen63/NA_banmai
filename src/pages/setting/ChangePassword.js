@@ -82,7 +82,10 @@ export default function ChangePassword() {
                   // placeholder="Nhập lại mật khẩu mới"
                 />
               </div>
-
+              <span className="note-password">
+                *Mật khẩu yêu cầu tối thiểu 6 kí tự, trong đó bao gồm ít nhất 1
+                chữ in hoa, 1 kí tự đặc biệt và số*
+              </span>
               <div className="edit-btn-submit">
                 <button
                   type="submit"

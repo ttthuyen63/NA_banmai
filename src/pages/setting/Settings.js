@@ -108,7 +108,7 @@ export default function Settings() {
             />
           </div>
           {submitError ? (
-            <div style={{ marginBottom: "26px", color: "red" }}>
+            <div style={{ color: "red", textAlign: "center" }}>
               Mật khẩu không đúng!{" "}
             </div>
           ) : (

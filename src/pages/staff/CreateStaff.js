@@ -6,12 +6,14 @@ import Select from "react-select";
 import DatePicker from "react-datepicker";
 import { addListpersonel, createPersonel } from "../../redux/personelSlice";
 import { useDispatch } from "react-redux";
+import { url } from "../../config/api";
+import { typeImplementation } from "@testing-library/user-event/dist/type/typeImplementation";
 
 export default function CreateStaff() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [part, setPart] = useState(null);
-
+  const [error, setError] = useState(false);
   const firstNameRef = useRef(null);
   const lastNameRef = useRef(null);
   const personnelCodeRef = useRef(null);
@@ -84,14 +86,21 @@ export default function CreateStaff() {
 
     try {
       const response = await fetch(
-        "http://100.82.237.81:8889/banmai/api/v1/personnel/management/create",
+        `${url}/personnel/management/create`,
         requestOptions
       );
-      const result = await response.text();
-      console.log(result);
-      navigate("/"); // Chuyển hướng sau khi tạo thành công
+      if (!response.ok) {
+        const errorResponse = await response.json(); // Chuyển response thành JSON để truy cập thông tin lỗi
+        setError(true);
+        console.log("Error response:", errorResponse);
+      } else {
+        const result = await response.text();
+        console.log(result);
+        navigate(-1);
+      }
     } catch (error) {
-      console.log("Error:", error);
+      // setError(true);
+      console.log("error", typeof error);
     }
   };
   console.log("selectedPart", selectedPart);
@@ -206,6 +215,19 @@ export default function CreateStaff() {
               </div>
             </form>
           </div>
+          {error ? (
+            <div
+              style={{
+                marginBottom: "26px",
+                color: "red",
+                textAlign: "center",
+              }}
+            >
+              Thông tin bạn nhập vào không hợp lệ!{" "}
+            </div>
+          ) : (
+            ""
+          )}
           <div className="create-btn-submit">
             <button
               type="submit"
