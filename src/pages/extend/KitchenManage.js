@@ -74,7 +74,7 @@ export default function KitchenManage() {
     var raw = JSON.stringify({
       kitchenCode: kitchenCodeRef?.current?.value,
       name: kitchenNameRef?.current?.value,
-      location: kitchenLocationRef?.current?.value,
+      // location: kitchenLocationRef?.current?.value,
     });
 
     var requestOptions = {
@@ -167,7 +167,7 @@ export default function KitchenManage() {
               <FontAwesomeIcon icon={faSearch} className="searchIcon" />
             </i>
             <input
-              ref={kitchenCodeRef && kitchenNameRef && kitchenLocationRef}
+              ref={kitchenCodeRef && kitchenNameRef}
               className="inputSearch"
               type="text"
               placeholder="Tìm kiếm..."

@@ -13,7 +13,8 @@ export default function CreateStaff() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [part, setPart] = useState(null);
-  const [error, setError] = useState(false);
+  const [showValidateError, setshowValidateError] = useState(false);
+  const [showDupplucateError, setshowDupplucateError] = useState(false);
   const firstNameRef = useRef(null);
   const lastNameRef = useRef(null);
   const personnelCodeRef = useRef(null);
@@ -91,7 +92,10 @@ export default function CreateStaff() {
       );
       if (!response.ok) {
         const errorResponse = await response.json(); // Chuyển response thành JSON để truy cập thông tin lỗi
-        setError(true);
+        setshowValidateError(
+          errorResponse.errorMessage.includes("Validation") || null
+        );
+        setshowDupplucateError(errorResponse.errorCode == 1001 || null);
         console.log("Error response:", errorResponse);
       } else {
         const result = await response.text();
@@ -139,6 +143,7 @@ export default function CreateStaff() {
                     placeholder="Nhập mã nhân viên"
                   />
                 </div>
+
                 <div className=" create select form-group">
                   <label>Bộ phận:</label>
                   <div className="select-part">
@@ -215,7 +220,7 @@ export default function CreateStaff() {
               </div>
             </form>
           </div>
-          {error ? (
+          {showValidateError ? (
             <div
               style={{
                 marginBottom: "26px",
@@ -224,6 +229,18 @@ export default function CreateStaff() {
               }}
             >
               Thông tin bạn nhập vào không hợp lệ!{" "}
+            </div>
+          ) : (
+            ""
+          )}
+          {showDupplucateError ? (
+            <div
+              style={{
+                color: "red",
+                textAlign: "center",
+              }}
+            >
+              Mã nhân viên này đã tồn tại!
             </div>
           ) : (
             ""

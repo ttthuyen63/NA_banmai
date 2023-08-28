@@ -4,8 +4,6 @@ const Options = (props) => {
   const { part } = props;
   const { position } = props;
 
-  console.log("part...", part);
-  console.log("position...", position);
   if (part === "KITCHEN") {
     return <div>Bếp</div>;
   } else if (part === "MANAGEMENT") {

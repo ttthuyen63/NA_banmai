@@ -71,7 +71,7 @@ export default function Account() {
       </div>
       <div className="content">
         <div className="row">
-          <div className="col-sm-6">
+          <div className="col-sm-6" style={{ paddingLeft: "40px" }}>
             <div className="info-staff">
               <table>
                 <tbody>

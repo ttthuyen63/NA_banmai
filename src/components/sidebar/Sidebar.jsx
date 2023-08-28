@@ -13,12 +13,6 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../redux/userSlice";
 
 const sidebarNavItems = [
-  //   {
-  //     display: "Tài khoản",
-  //     // icon: <i className="bx bx-home"></i>,
-  //     to: "/",
-  //     section: "",
-  //   },
   {
     display: "Nhân viên",
     // icon: <i className="bx bx-star"></i>,
@@ -53,10 +47,6 @@ const Sidebar = () => {
       const sidebarItem = sidebarRef.current.querySelector(
         ".sidebar__menu__item"
       );
-      //     indicatorRef.current.style.height = `${sidebarItem.clientHeight}px`;
-      //     setStepHeight(sidebarItem.clientHeight);
-      //   }, 50);
-      // }, []);
       const preferencesItem = sidebarRef.current.querySelector(
         ".sidebar__preferences"
       );

@@ -5,6 +5,7 @@ import { login, loginAsync } from "../redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { urlAdmin } from "../config/api";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -13,13 +14,14 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const token = useSelector((state) => state.userReducer.token);
+  const [refreshToken, setRefreshToken] = useState(null);
   const submit = async () => {
     try {
       const res = await axios.post(
-        "http://100.82.237.81:8888/banmai/api/v1/authentication/login",
+        `${urlAdmin}/authentication/login`,
         {
-          username: username,
-          password: password,
+          // username: username,
+          // password: password,
           // "Content-Type": "application/json",
           // returnSecureToken: true,
         },
@@ -33,10 +35,13 @@ export default function Login() {
       );
       console.log("res", res);
       const accessToken = res?.data?.data?.tokens?.accessToken;
+      const refreshToken = res?.data?.data?.tokens?.refreshToken;
+      setRefreshToken(refreshToken);
       dispatch(login(accessToken));
+      localStorage.setItem("refreshToken", refreshToken);
 
       navigate("/");
-      console.log("token", accessToken);
+      console.log("refreshToken", refreshToken);
     } catch (error) {
       setError(true);
     }
@@ -45,6 +50,38 @@ export default function Login() {
   useEffect(() => {
     if (token !== null) {
       navigate("/");
+    } else if (refreshToken !== null) {
+      // Check if the current API request was unauthorized (401)
+      axios.interceptors.response.use(
+        (response) => response,
+        async (error) => {
+          if (error.response && error.response.status === 403) {
+            try {
+              // Refresh the token using the refresh token
+              const refreshResponse = await axios.get(
+                `${urlAdmin}/authentication/authenticated/refresh-token`,
+                {
+                  refreshToken: `Bearer ${refreshToken}`,
+                }
+              );
+
+              const newAccessToken =
+                refreshResponse?.data?.data?.tokens?.accessToken;
+
+              // Update the token in Redux store
+              dispatch(login(newAccessToken));
+
+              // Retry the original request with the new token
+              error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+              return axios.request(error.config);
+            } catch (refreshError) {
+              setError(true); // Handle refresh error
+              throw refreshError;
+            }
+          }
+          throw error;
+        }
+      );
     }
   }, [token, navigate]);
 
