@@ -8,24 +8,6 @@ const initialState = {
   refreshToken: localStorage.getItem("torefreshTokenken"),
 };
 
-export const refreshAccessToken = createAsyncThunk(
-  "user/refreshAccessToken",
-  async (refreshToken, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        `${urlAdmin}/authentication/authenticated/refresh-token`,
-        {
-          refreshToken: `Bearer ${refreshToken}`,
-        }
-      );
-      const newAccessToken = response?.data?.data?.tokens?.accessToken;
-      return newAccessToken;
-    } catch (error) {
-      return rejectWithValue(error.response.data); // Handle error case
-    }
-  }
-);
-
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -39,15 +21,15 @@ const userSlice = createSlice({
       state.token = null;
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(refreshAccessToken.fulfilled, (state, action) => {
-        state.token = action.payload;
-      })
-      .addCase(refreshAccessToken.rejected, (state) => {
-        state.token = null; // Handle error case if needed
-      });
-  },
+  // extraReducers: (builder) => {
+  //   builder
+  //     .addCase(refreshAccessToken.fulfilled, (state, action) => {
+  //       state.token = action.payload;
+  //     })
+  //     .addCase(refreshAccessToken.rejected, (state) => {
+  //       state.token = null; // Handle error case if needed
+  //     });
+  // },
 });
 
 export const { login, logout } = userSlice.actions;

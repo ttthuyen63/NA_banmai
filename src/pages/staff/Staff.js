@@ -98,7 +98,6 @@ export default function Staff() {
       setpersonnelData(slicedData);
       setDisplayedData(slicedData);
       setTotalRecords(result?.data?.totalElements);
-      console.log(data);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -144,7 +143,6 @@ export default function Staff() {
       setDisplayedData(slicedData);
       setTotalRecords(result?.data?.totalElements);
       setShowAdvancedSearch(false);
-      console.log(data);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -189,7 +187,6 @@ export default function Staff() {
       const data = result?.data?.content;
       setpersonnelData(data);
       setTotalRecords(result?.data?.totalElements);
-      console.log(data);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -197,10 +194,8 @@ export default function Staff() {
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
-  console.log("personnel", personnelData);
   const goToDetail = (code) => {
     navigate("/staffDetail/" + code);
-    console.log("code", code);
   };
   const gotoCreateStaff = () => {
     navigate("/createStaff");

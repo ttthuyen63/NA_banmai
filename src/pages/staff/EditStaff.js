@@ -31,7 +31,6 @@ export default function EditStaff() {
     const strings = fullName?.split(" ");
     setSplittedStrings(strings);
   }, []);
-  console.log("splittedStrings", typeof splittedStrings[0]);
   const [basicSalary, setbasicSalary] = useState(itemDetail?.basicSalary);
   const [birthDate, setbirthDate] = useState(itemDetail?.birthDate);
   const [firstName, setfirstName] = useState("");
@@ -54,7 +53,6 @@ export default function EditStaff() {
 
   const handleBackClick = () => {
     navigate(-1);
-    console.log("Back button clicked");
   };
 
   const handleDateChange = (event) => {
@@ -93,7 +91,6 @@ export default function EditStaff() {
   const handleSubmit = async (e) => {
     // e.preventDefault();
     const token = localStorage.getItem("token");
-    console.log("token", token);
     var myHeaders = new Headers();
     myHeaders.append("personnelCode", `${personnelCode}`);
     myHeaders.append("Content-Type", "application/json");
@@ -141,7 +138,6 @@ export default function EditStaff() {
         setshowConfirm(false);
       } else {
         const result = await response.text();
-        console.log(result);
         navigate(-1);
       }
     } catch (error) {

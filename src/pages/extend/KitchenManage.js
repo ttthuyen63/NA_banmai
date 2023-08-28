@@ -18,6 +18,7 @@ export default function KitchenManage() {
   const kitchenCodeRef = useRef(null);
   const kitchenNameRef = useRef(null);
   const kitchenLocationRef = useRef(null);
+  const searchInputRef = useRef(null);
   const [displayedData, setDisplayedData] = useState([]);
   const [searchApiCalled, setSearchApiCalled] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -66,15 +67,13 @@ export default function KitchenManage() {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 
-    const queryParams = new URLSearchParams({
-      // page: currentPage - 1, // Trang bắt đầu từ 0
-      // size: recordsPerPage,
-    });
+    const queryParams = new URLSearchParams({});
 
     var raw = JSON.stringify({
-      kitchenCode: kitchenCodeRef?.current?.value,
-      name: kitchenNameRef?.current?.value,
+      kitchenCode: searchInputRef?.current?.value,
+      name: searchInputRef?.current?.value,
       // location: kitchenLocationRef?.current?.value,
+      // searchValue: searchValue,
     });
 
     var requestOptions = {
@@ -167,7 +166,7 @@ export default function KitchenManage() {
               <FontAwesomeIcon icon={faSearch} className="searchIcon" />
             </i>
             <input
-              ref={kitchenCodeRef && kitchenNameRef}
+              ref={searchInputRef}
               className="inputSearch"
               type="text"
               placeholder="Tìm kiếm..."
