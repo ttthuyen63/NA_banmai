@@ -34,6 +34,7 @@ export default function KitchenManage() {
     const queryParams = new URLSearchParams({
       page: currentPage - 1, // Trang bắt đầu từ 0
       size: recordsPerPage,
+      order: "DESC",
     });
 
     var raw = JSON.stringify({});
