@@ -1,16 +1,14 @@
 .staffInfo {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  /* flex-direction: row; */
   gap: 5px;
   padding: 5px;
   overflow: auto;
-  /* height: 80vh; */
-  /* max-width: 1000px;  */
 }
 
 .infoBox {
-  flex-basis: calc(33% - 2px); /* Chia cột thành 50% với khoảng cách 10px */
+  flex-basis: calc(33% - 2px); /* Chia cột thành 33% với khoảng cách 10px */
   padding: 5px;
   border: 1px solid #b1d3fe;
   box-sizing: border-box;
@@ -45,7 +43,7 @@ h4 {
 }
 
 .infoBox p {
-  margin-bottom: 0px; /* hoặc bạn có thể đặt giá trị mong muốn tại đây */
+  margin-bottom: 0px; 
 }
 
 .infoBox td {
@@ -53,7 +51,6 @@ h4 {
 }
 .infoBox th {
   padding-left: 20px;
-  /* padding-bottom: 10px; */
 }
 
 .btnDetail {

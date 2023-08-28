@@ -1,12 +1,9 @@
 .staffInfo {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   gap: 5px;
   padding: 5px;
   overflow: auto;
-  /* height: 80vh; */
-  /* max-width: 1000px;  */
 }
 
 .titleInfo {
@@ -45,7 +42,7 @@ h4 {
 }
 
 .infoBox p {
-  margin-bottom: 0px; /* hoặc bạn có thể đặt giá trị mong muốn tại đây */
+  margin-bottom: 0px;
 }
 
 .infoBox td {
@@ -53,7 +50,6 @@ h4 {
 }
 .infoBox th {
   padding-left: 20px;
-  /* padding-bottom: 10px; */
 }
 
 .btnDetail {
