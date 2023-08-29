@@ -24,7 +24,7 @@ export default function KitchenManage() {
   const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 15;
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const getKitchenApi = async (page) => {
     var myHeaders = new Headers();

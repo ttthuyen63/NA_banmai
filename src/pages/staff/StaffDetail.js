@@ -16,7 +16,7 @@ export default function StaffDetail() {
   const [showDel, setshowDel] = useState(false);
   const [deleteCode, setdeleteCode] = useState("");
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   useEffect(() => {
     getpersonnelDetailApi();
   }, []);
@@ -101,7 +101,7 @@ export default function StaffDetail() {
   };
 
   const handleDelete = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log("token", token);
     var myHeaders = new Headers();
     myHeaders.append("personnelCode", `${personnelCode}`);

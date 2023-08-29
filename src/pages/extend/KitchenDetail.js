@@ -12,7 +12,7 @@ export default function KitchenDetail() {
   const [kitchenDetailData, setKitchenDetailData] = useState([]);
   const [showDel, setshowDel] = useState(false);
   const [deleteCode, setdeleteCode] = useState("");
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   useEffect(() => {
     getKitchenDetailApi();
   }, []);
@@ -66,7 +66,7 @@ export default function KitchenDetail() {
   };
 
   const handleDelete = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log("token", token);
     var myHeaders = new Headers();
     myHeaders.append("kitchenCode", `${kitchenCode}`);

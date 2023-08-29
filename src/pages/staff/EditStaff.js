@@ -89,8 +89,8 @@ export default function EditStaff() {
   console.log("newObject", newObject);
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
-    const token = localStorage.getItem("token");
+    e.preventDefault();
+    const token = sessionStorage.getItem("token");
     var myHeaders = new Headers();
     myHeaders.append("personnelCode", `${personnelCode}`);
     myHeaders.append("Content-Type", "application/json");
@@ -327,7 +327,10 @@ export default function EditStaff() {
           )}
           <div className="edit-btn-submit">
             <button
-              onClick={() => handleClickConfirm()}
+              onClick={(e) => {
+                e.preventDefault(); // Ngăn chặn hành động mặc định của nút submit
+                handleClickConfirm();
+              }}
               type="submit"
               style={{ width: "25%" }}
               className="btn btn-primary"

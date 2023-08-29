@@ -12,7 +12,7 @@ export default function Settings() {
   const navigate = useNavigate();
   const [usernameData, setusernameData] = useState([]);
   const currentPasswordRef = useRef(null);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   useEffect(() => {
     getusernameDataApi();
   }, []);
@@ -45,7 +45,7 @@ export default function Settings() {
   console.log("usernameData", usernameData);
 
   const handleSubmit = async (e) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log("token", token);
     var myHeaders = new Headers();
     myHeaders.append(
@@ -68,7 +68,7 @@ export default function Settings() {
       );
       const result = await response.json();
       console.log(result.data.changePasswordToken);
-      localStorage.setItem(
+      sessionStorage.setItem(
         "tokenChangePassword",
         result.data.changePasswordToken
       );

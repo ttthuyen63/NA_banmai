@@ -12,7 +12,7 @@ export default function Account() {
   const params = useParams();
   const personnelCode = params.personnelCode;
   const [accountByCodelData, setaccountByCodelData] = useState([]);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const dispatch = useDispatch();
   const handleBackClick = () => {
     navigate(-1);

@@ -20,8 +20,8 @@ export default function Login() {
       const res = await axios.post(
         `${urlAdmin}/authentication/login`,
         {
-          // username: username,
-          // password: password,
+          username: username,
+          password: password,
           // "Content-Type": "application/json",
           // returnSecureToken: true,
         },
@@ -38,7 +38,7 @@ export default function Login() {
       const refreshToken = res?.data?.data?.tokens?.refreshToken;
       setRefreshToken(refreshToken);
       dispatch(login(accessToken));
-      localStorage.setItem("refreshToken", refreshToken);
+      sessionStorage.setItem("refreshToken", refreshToken);
 
       navigate("/");
       console.log("refreshToken", refreshToken);
@@ -48,42 +48,59 @@ export default function Login() {
   };
 
   useEffect(() => {
+    const storedRefreshToken = sessionStorage.getItem("refreshToken");
     if (token !== null) {
       navigate("/");
-    } else if (refreshToken !== null) {
-      // Check if the current API request was unauthorized (401)
-      axios.interceptors.response.use(
-        (response) => response,
-        async (error) => {
-          if (error.response && error.response.status === 403) {
-            try {
-              // Refresh the token using the refresh token
-              const refreshResponse = await axios.get(
-                `${urlAdmin}/authentication/authenticated/refresh-token`,
-                {
-                  refreshToken: `Bearer ${refreshToken}`,
-                }
-              );
-
-              const newAccessToken =
-                refreshResponse?.data?.data?.tokens?.accessToken;
-
-              // Update the token in Redux store
-              dispatch(login(newAccessToken));
-
-              // Retry the original request with the new token
-              error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-              return axios.request(error.config);
-            } catch (refreshError) {
-              setError(true); // Handle refresh error
-              throw refreshError;
-            }
-          }
-          throw error;
-        }
-      );
     }
   }, [token, navigate]);
+  // useEffect(() => {
+  //   if (token !== null) {
+  //     navigate("/");
+  //   } else if (refreshToken !== null) {
+  //     // Check if the current API request was unauthorized (401)
+  //     axios.interceptors.response.use(
+  //       (response) => response,
+  //       async (error) => {
+  //         if (error.response && error.response.status === 403) {
+  //           try {
+  //             // Refresh the token using the refresh token
+  //             const refreshResponse = await axios.get(
+  //               `${urlAdmin}/authentication/authenticated/refresh-token`,
+  //               {
+  //                 refreshToken: `Bearer ${refreshToken}`,
+  //               }
+  //             );
+
+  //             const newAccessToken =
+  //               refreshResponse?.data?.data?.tokens?.accessToken;
+
+  //             // Update the token in Redux store
+  //             dispatch(login(newAccessToken));
+
+  //             // Retry the original request with the new token
+  //             error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+  //             return axios.request(error.config);
+  //           } catch (refreshError) {
+  //             setError(true); // Handle refresh error
+  //             throw refreshError;
+  //           }
+  //         }
+  //         throw error;
+  //       }
+  //     );
+  //   }
+  // }, [token, navigate]);
+  useEffect(() => {
+    // Xóa Refresh Token khi người dùng đăng xuất hoặc đóng tab
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem("refreshToken");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <Container>

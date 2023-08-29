@@ -8,7 +8,7 @@ export const customAxios = axios.create({
   //   hearders: { "X-Custom-Header": "foobar" },
 });
 
-export const url = "http://100.82.237.81:8889/banmai/api/v1";
-export const urlAdmin = "http://100.82.237.81:8888/banmai/api/v1";
+export const url = "https://bm-management.smartstructure.xyz/banmai/api/v1";
+export const urlAdmin = "https://bm-auth.smartstructure.xyz/banmai/api/v1";
 
 export const localUrl = "http://100.81.220.115:3000";

@@ -8,11 +8,11 @@ import { Button, Container, Modal, Tooltip } from "react-bootstrap";
 export default function EditKitchen() {
   const navigate = useNavigate();
   const params = useParams();
-  const kitchen_code = params.kitchen_code;
+  const kitchenCode = params.kitchenCode;
   const { ...stateLocation } = useLocation();
   const itemDetail = stateLocation?.state;
 
-  const { kitchenCode, ...newObject } = itemDetail;
+  // const { kitchenCode, ...newObject } = itemDetail;
   console.log("kitchenCode...", kitchenCode);
   // const queryParams = new URLSearchParams(window.location.search);
 
@@ -25,7 +25,7 @@ export default function EditKitchen() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     var myHeaders = new Headers();
     myHeaders.append("kitchenCode", `${kitchenCode}`);
     myHeaders.append("Content-Type", "application/json");
@@ -33,7 +33,7 @@ export default function EditKitchen() {
 
     var raw = JSON.stringify({
       data: {
-        ...newObject,
+        ...itemDetail,
         name: name,
         location: location,
       },
@@ -129,7 +129,10 @@ export default function EditKitchen() {
 
               <div className="edit-btn-submit">
                 <button
-                  onClick={() => handleClickConfirm()}
+                  onClick={(e) => {
+                    e.preventDefault(); // Ngăn chặn hành động mặc định của nút submit
+                    handleClickConfirm();
+                  }}
                   type="submit"
                   className="btn btn-primary"
                   style={{ width: "25%" }}

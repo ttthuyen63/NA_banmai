@@ -12,7 +12,7 @@ export default function UpdatePassword() {
   const accountByCodelData = useSelector((state) => state.account);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log("token", token);
     var myHeaders = new Headers();
     myHeaders.append("accountId", `${accountByCodelData?.id}`);

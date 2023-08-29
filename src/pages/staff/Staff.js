@@ -33,7 +33,7 @@ export default function Staff() {
   const [totalRecords, setTotalRecords] = useState(0);
 
   const recordsPerPage = 15;
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const data = {
     parts: [
       { key: "KITCHEN", value: "Bếp" },

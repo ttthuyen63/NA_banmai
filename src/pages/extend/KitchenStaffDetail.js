@@ -19,7 +19,7 @@ export default function KitchenStaffDetail() {
   const recordsPerPage = 15;
   const [displayedData, setDisplayedData] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const getKitchenStaffApi = async (page) => {
     var myHeaders = new Headers();

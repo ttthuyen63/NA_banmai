@@ -59,7 +59,7 @@ export default function CreateStaff() {
   };
 
   const handleSubmit = async (e) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     console.log("token", token);
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");

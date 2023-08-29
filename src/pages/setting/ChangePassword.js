@@ -12,8 +12,8 @@ export default function ChangePassword() {
   const accountByCodelData = useSelector((state) => state.account);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = localStorage.getItem("token");
-    const tokenChangePassword = localStorage.getItem("tokenChangePassword");
+    const token = sessionStorage.getItem("token");
+    const tokenChangePassword = sessionStorage.getItem("tokenChangePassword");
     console.log("token", token);
     console.log("tokenChangePassword", tokenChangePassword);
     var myHeaders = new Headers();
