@@ -1,4 +1,4 @@
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import { addListpersonel, createPersonel } from "../../redux/personelSlice";
 import { useDispatch } from "react-redux";
 import { url } from "../../config/api";
 import { typeImplementation } from "@testing-library/user-event/dist/type/typeImplementation";
+import { Button, Modal } from "react-bootstrap";
 
 export default function CreateStaff() {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ export default function CreateStaff() {
   const kitchenCodeRef = useRef(null);
   const selectedPartRef = useRef(null); // Thêm tham chiếu cho trường Select Bộ phận
   const selectedPositionRef = useRef(null); // Thêm tham chiếu cho trường Select Chức vụ
+  const [showDialog, setshowDialog] = useState(false);
+  const [showConfirm, setshowConfirm] = useState(false);
 
   const data = {
     parts: [
@@ -97,19 +100,76 @@ export default function CreateStaff() {
         );
         setshowDupplucateError(errorResponse.errorCode == 1001 || null);
         console.log("Error response:", errorResponse);
+        setshowConfirm(false);
       } else {
         const result = await response.text();
         console.log(result);
-        navigate(-1);
+        setshowConfirm(false);
+        setshowDialog(true);
+        const timeOut = setTimeout(() => {
+          navigate(-1);
+        }, 2000);
+        // navigate(-1);
       }
     } catch (error) {
       // setError(true);
       console.log("error", typeof error);
     }
   };
-  console.log("selectedPart", selectedPart);
+  const handleClickConfirm = () => {
+    setshowConfirm(true);
+  };
+  const handleClose = () => {
+    setshowDialog(false);
+    setshowConfirm(false);
+  };
   return (
     <div>
+      <Modal show={showConfirm} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận thêm</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Bạn có chắc chắn muốn thêm nhân viên?</Modal.Body>
+        <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{
+              backgroundColor: "#baeaff",
+              border: "none",
+              color: "black",
+            }}
+            // onClick={() => handleDelete(item?.id)
+            onClick={handleSubmit}
+            // }
+          >
+            Chắc chắn
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#ffbacf",
+              border: "none",
+              color: "black",
+            }}
+            onClick={handleClose}
+          >
+            Không
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showDialog} onHide={handleClose}>
+        {/* <Modal.Header closeButton>
+          <Modal.Title>Thành công!!</Modal.Title>
+        </Modal.Header> */}
+        <Modal.Body style={{ textAlign: "center" }}>
+          <FontAwesomeIcon
+            icon={faCheck}
+            style={{ color: "green", fontSize: "80px" }}
+          />
+          <div>Bạn đã thêm nhân viên mới!!</div>
+        </Modal.Body>
+        {/* <Modal.Footer
+          style={{ display: "flex", justifyContent: "center" }}
+        ></Modal.Footer> */}
+      </Modal>
       <div className="detail-header">
         <div
           className="back-button-header"
@@ -249,7 +309,10 @@ export default function CreateStaff() {
             <button
               type="submit"
               style={{ width: "25%" }}
-              onClick={handleSubmit}
+              onClick={(e) => {
+                e.preventDefault();
+                handleClickConfirm();
+              }}
             >
               Xác nhận
             </button>

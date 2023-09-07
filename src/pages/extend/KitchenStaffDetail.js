@@ -9,6 +9,7 @@ import styles from "../../css/KitchenStaffInfo.module.css";
 import KitchenStaffInfo from "../../components/KitchenStaffInfo";
 import { url } from "../../config/api";
 import Options from "../../components/Options";
+import FormatDate from "../../components/FormatDate";
 
 export default function KitchenStaffDetail() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function KitchenStaffDetail() {
   const [displayedData, setDisplayedData] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const token = sessionStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(true);
 
   const getKitchenStaffApi = async (page) => {
     var myHeaders = new Headers();
@@ -54,6 +56,8 @@ export default function KitchenStaffDetail() {
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   console.log("kitchenStaffData", kitchenStaffData);
@@ -113,90 +117,97 @@ export default function KitchenStaffDetail() {
           <div className="header_kitchen-staff_kitchen-code">{kitchenCode}</div>
         </div>
       </div>
-      <div className="content-detail">
-        <div className={styles.staffInfo}>
-          {kitchenStaffData?.map((item, index) => (
-            <div className={styles.infoBox}>
-              <h4
-                className={styles.titleInfo}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                onMouseMove={handleMouseMove}
-                onClick={() => goToDetail(item?.personnelCode)}
-              >
-                {item?.personnelCode}
-              </h4>
-              {showHoverText && (
-                <span
-                  className={styles.hoverText}
-                  style={{
-                    position: "fixed",
-                    top: hoverTextPosition.y,
-                    left: hoverTextPosition.x,
-                  }}
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="content-detail">
+          <div className={styles.staffInfo}>
+            {kitchenStaffData?.map((item, index) => (
+              <div className={styles.infoBox}>
+                <h4
+                  className={styles.titleInfo}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  onMouseMove={handleMouseMove}
+                  onClick={() => goToDetail(item?.personnelCode)}
                 >
-                  Xem chi tiết
-                </span>
-              )}
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Họ và tên:</th>
-                    <td>{item?.fullName}</td>
-                  </tr>
-                  <tr>
-                    <th>Ngày sinh:</th>
-                    <td>{item?.birthDate}</td>
-                  </tr>
-                  <tr>
-                    <th>Bộ phận:</th>
-                    {/* <td>{item?.part}</td> */}
-                    <td>
-                      <Options part={item?.part} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Chức vụ:</th>
-                    <td>
-                      <Options position={item?.position} />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              {/* <div
+                  {item?.personnelCode}
+                </h4>
+                {showHoverText && (
+                  <span
+                    className={styles.hoverText}
+                    style={{
+                      position: "fixed",
+                      top: hoverTextPosition.y,
+                      left: hoverTextPosition.x,
+                    }}
+                  >
+                    Xem chi tiết
+                  </span>
+                )}
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Họ và tên:</th>
+                      <td>{item?.fullName}</td>
+                    </tr>
+                    <tr>
+                      <th>Ngày sinh:</th>
+                      {/* <td>{item?.birthDate}</td> */}
+                      <td>
+                        <FormatDate date={item?.birthDate} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Bộ phận:</th>
+                      {/* <td>{item?.part}</td> */}
+                      <td>
+                        <Options part={item?.part} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Chức vụ:</th>
+                      <td>
+                        <Options position={item?.position} />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                {/* <div
               className={styles.btnDetail}
               onClick={() => goToDetail(item?.personnelCode)}
             >
               <button>Xem chi tiết</button>
             </div> */}
-            </div>
-          ))}
-        </div>
-        <div className="pagination">
-          {currentPage != 1 && (
-            <div
-              className="back-button-header"
-              onClick={() => {
-                if (currentPage > 1) {
-                  setCurrentPage(currentPage - 1);
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </div>
-          )}
-          <span className="">{currentPage}</span>
+              </div>
+            ))}
+          </div>
+          <div className="pagination">
+            {currentPage != 1 && (
+              <div
+                className="back-button-header"
+                onClick={() => {
+                  if (currentPage > 1) {
+                    setCurrentPage(currentPage - 1);
+                  }
+                }}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </div>
+            )}
+            <span className="">{currentPage}</span>
 
-          {currentPage * recordsPerPage < totalRecords && (
-            <div
-              className="back-button-header"
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              <FontAwesomeIcon icon={faChevronRight} />
-            </div>
-          )}
+            {currentPage * recordsPerPage < totalRecords && (
+              <div
+                className="back-button-header"
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

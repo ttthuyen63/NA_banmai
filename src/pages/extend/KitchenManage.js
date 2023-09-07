@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import KitchenInfo from "../../components/KitchenInfo";
 import { url, localUrl } from "../../config/api";
+import diacritics from "diacritics";
 
 export default function KitchenManage() {
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ export default function KitchenManage() {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 15;
   const token = sessionStorage.getItem("token");
-
   const getKitchenApi = async (page) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -64,19 +64,19 @@ export default function KitchenManage() {
 
   const getkitchenSearchApi = async (page) => {
     setSearchApiCalled(true);
+    const searchInput = diacritics.remove(searchInputRef?.current?.value);
+    console.log("searchInput", searchInput);
     var myHeaders = new Headers();
     myHeaders.append("Origin", `${localUrl}`);
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("filter", `${searchInput}`);
 
-    const queryParams = new URLSearchParams({});
-
-    var raw = JSON.stringify({
-      kitchenCode: searchInputRef?.current?.value,
-      name: searchInputRef?.current?.value,
-      // location: kitchenLocationRef?.current?.value,
-      // searchValue: searchValue,
+    const queryParams = new URLSearchParams({
+      // filter: searchInputRef?.current?.value,
     });
+
+    var raw = JSON.stringify({});
 
     var requestOptions = {
       method: "POST",
@@ -87,7 +87,7 @@ export default function KitchenManage() {
 
     try {
       const response = await fetch(
-        `${url}/kitchen/management/search`,
+        `${url}/kitchen/management/search?${queryParams.toString()}`,
         requestOptions
       );
       const result = await response.json();
@@ -129,7 +129,6 @@ export default function KitchenManage() {
     navigate(-1);
     console.log("Back button clicked");
   };
-  console.log("currentPage", currentPage);
 
   const [hoverTextPosition, setHoverTextPosition] = useState({ x: 0, y: 0 });
   const [showHoverText, setShowHoverText] = useState(false);
@@ -169,6 +168,7 @@ export default function KitchenManage() {
             </i>
             <input
               ref={searchInputRef}
+              // ref={kitchenCodeRef && kitchenNameRef}
               className="inputSearch"
               type="text"
               placeholder="Tìm kiếm..."
@@ -255,7 +255,7 @@ export default function KitchenManage() {
         <div className="pagination">
           {currentPage != 1 && (
             <div
-              className="back-button-header"
+              className="previous-page-button"
               onClick={() => {
                 if (currentPage > 1) {
                   setCurrentPage(currentPage - 1);
@@ -269,7 +269,7 @@ export default function KitchenManage() {
 
           {currentPage * recordsPerPage < totalRecords && (
             <div
-              className="back-button-header"
+              className="after-page-button"
               onClick={() => setCurrentPage(currentPage + 1)}
             >
               <FontAwesomeIcon icon={faChevronRight} />

@@ -6,6 +6,7 @@ import { url } from "../../config/api";
 import CryptoJS from "crypto-js";
 import { useDispatch } from "react-redux";
 import { setAccount } from "../../redux/accountSlice";
+import Options from "../../components/Options";
 
 export default function Account() {
   const navigate = useNavigate();
@@ -89,7 +90,10 @@ export default function Account() {
                   </tr>
                   <tr>
                     <th>Loại tài khoản:</th>
-                    <td>{accountByCodelData?.accountType}</td>
+                    {/* <td>{accountByCodelData?.accountType}</td> */}
+                    <td>
+                      <Options typeAccount={accountByCodelData?.accountType} />
+                    </td>
                   </tr>
                 </tbody>
               </table>

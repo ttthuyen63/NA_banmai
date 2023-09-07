@@ -73,11 +73,15 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/emptyAccount",
-    element: <EmptyAccount />,
+    path: "/emptyAccount/:personnelCode",
+    element: (
+      <ProtectRouter>
+        <EmptyAccount />
+      </ProtectRouter>
+    ),
   },
   {
-    path: "/createAccount",
+    path: "/createAccount/:personnelCode",
     element: (
       <ProtectRouter>
         <AddAccount />

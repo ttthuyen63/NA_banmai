@@ -6,6 +6,7 @@ import { url } from "../../config/api";
 import { currencyFormat } from "../../ultils/constant";
 import { Button, Container, Modal, Tooltip } from "react-bootstrap";
 import Options from "../../components/Options";
+import FormatDate from "../../components/FormatDate";
 
 export default function StaffDetail() {
   const params = useParams();
@@ -15,7 +16,7 @@ export default function StaffDetail() {
   const [accountByCodelData, setaccountByCodelData] = useState([]);
   const [showDel, setshowDel] = useState(false);
   const [deleteCode, setdeleteCode] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true);
   const token = sessionStorage.getItem("token");
   useEffect(() => {
     getpersonnelDetailApi();
@@ -45,6 +46,8 @@ export default function StaffDetail() {
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
     console.log("personnelCode", personnelCode);
   };
@@ -57,12 +60,9 @@ export default function StaffDetail() {
     myHeaders.append("personnelCode", `${personnelCode}`);
     myHeaders.append("Authorization", `Bearer ${token}`);
 
-    // var raw = "";
-
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
-      // body: raw,
       redirect: "follow",
     };
 
@@ -97,7 +97,6 @@ export default function StaffDetail() {
   const handleClickDelete = (code) => {
     setdeleteCode(code);
     setshowDel(true);
-    // console.log("id...", id);
   };
 
   const handleDelete = async () => {
@@ -122,16 +121,20 @@ export default function StaffDetail() {
       );
       const result = await response.text();
       console.log(result);
-      navigate(-1); // Chuyển hướng sau khi tạo thành công
+      navigate(-1);
     } catch (error) {
       console.log("Error:", error);
     }
   };
-  const gotoAccount = (code) => {
+  const gotoAccount = (personnelCode) => {
     if (accountByCodelData == null) {
-      navigate("/emptyAccount");
+      navigate("/emptyAccount/" + personnelCode, {
+        state: personnelDetailData,
+      });
     } else {
-      navigate("/account/" + code);
+      navigate("/account/" + personnelCode, {
+        state: personnelDetailData,
+      });
     }
     //
   };
@@ -183,109 +186,123 @@ export default function StaffDetail() {
         </div>
         <div className="title-header">Thông tin nhân viên</div>
       </div>
-      <div className="content">
-        <div className="row">
-          <div className="col-sm-8">
-            <div className="info-staff">
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Mã nhân viên:</th>
-                    <td>{personnelDetailData?.personnelCode}</td>
-                  </tr>
-                  <tr>
-                    <th>Họ và tên:</th>
-                    <td>{personnelDetailData?.fullName}</td>
-                  </tr>
-                  <tr>
-                    <th>Ngày sinh:</th>
-                    <td>{personnelDetailData?.birthDate}</td>
-                  </tr>
-                  <tr>
-                    <th>Bộ phận:</th>
-                    <td>
-                      <Options part={personnelDetailData?.part} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Chức vụ:</th>
-                    <td>
-                      <Options position={personnelDetailData?.position} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Ngày vào làm:</th>
-                    <td>{personnelDetailData?.startDate}</td>
-                  </tr>
-                  <tr>
-                    <th>Lương cơ bản:</th>
-                    <td>{currencyFormat(personnelDetailData?.basicSalary)}</td>
-                  </tr>
-                  {personnelDetailData?.part === "KITCHEN" ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="content">
+          <div className="row">
+            <div className="col-sm-8">
+              <div className="info-staff">
+                <table>
+                  <tbody>
                     <tr>
-                      <th>Mã bếp:</th>
-                      <td>{personnelDetailData?.kitchenCode}</td>
+                      <th>Mã nhân viên:</th>
+                      <td>{personnelDetailData?.personnelCode}</td>
                     </tr>
-                  ) : (
-                    ""
-                  )}
-                </tbody>
-              </table>
+                    <tr>
+                      <th>Họ và tên:</th>
+                      <td>{personnelDetailData?.fullName}</td>
+                    </tr>
+                    <tr>
+                      <th>Ngày sinh:</th>
+                      {/* <td>{birthDateFormat}</td> */}
+                      <td>
+                        <FormatDate date={personnelDetailData?.birthDate} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Bộ phận:</th>
+                      <td>
+                        <Options part={personnelDetailData?.part} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Chức vụ:</th>
+                      <td>
+                        <Options position={personnelDetailData?.position} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Ngày vào làm:</th>
+                      {/* <td>{personnelDetailData?.startDate}</td> */}
+                      <td>
+                        <FormatDate date={personnelDetailData?.startDate} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Lương cơ bản:</th>
+                      <td>
+                        {currencyFormat(personnelDetailData?.basicSalary)}
+                      </td>
+                    </tr>
+                    {personnelDetailData?.part === "KITCHEN" ? (
+                      <tr>
+                        <th>Mã bếp:</th>
+                        <td>{personnelDetailData?.kitchenCode}</td>
+                      </tr>
+                    ) : (
+                      ""
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-          <div className="col-sm-4">
-            <div className="btn-detail edit-button">
-              <button
-                onClick={() => {
-                  gotoEdit(
-                    personnelDetailData?.personnelCode,
-                    personnelDetailData
-                  );
-                }}
-                className="btn btn-primary"
-              >
-                Chỉnh sửa thông tin
-              </button>
-            </div>
-            <div className="btn-detail delete-button">
-              <button
-                className="btn btn-primary"
-                onClick={() =>
-                  handleClickDelete(personnelDetailData?.personnelCode)
-                }
-              >
-                Xóa nhân viên
-              </button>
-            </div>
-            {personnelDetailData?.part === "KITCHEN" &&
-            personnelDetailData?.position === "PERSONNEL" ? (
-              ""
-            ) : (
-              <div className="btn-detail account-button">
+            <div className="col-sm-4">
+              <div className="btn-detail edit-button">
                 <button
                   onClick={() => {
-                    gotoAccount(personnelDetailData?.personnelCode);
+                    gotoEdit(
+                      personnelDetailData?.personnelCode,
+                      personnelDetailData
+                    );
                   }}
                   className="btn btn-primary"
                 >
-                  Tài khoản
+                  Chỉnh sửa thông tin
                 </button>
               </div>
-            )}
+              <div className="btn-detail delete-button">
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    handleClickDelete(personnelDetailData?.personnelCode)
+                  }
+                >
+                  Xóa nhân viên
+                </button>
+              </div>
+              {personnelDetailData?.part === "KITCHEN" ? (
+                ""
+              ) : (
+                <div className="btn-detail account-button">
+                  <button
+                    onClick={() => {
+                      gotoAccount(
+                        personnelDetailData?.personnelCode,
+                        personnelDetailData
+                      );
+                    }}
+                    className="btn btn-primary"
+                  >
+                    Tài khoản
+                  </button>
+                </div>
+              )}
 
-            <div className="btn-detail attendance-button">
-              <button
-                className="btn btn-primary"
-                // onClick={() =>
-                //   handleClickDelete(personnelDetailData?.personnelCode)
-                // }
-              >
-                Xem bảng công
-              </button>
+              <div className="btn-detail attendance-button">
+                <button
+                  className="btn btn-primary"
+                  // onClick={() =>
+                  //   handleClickDelete(personnelDetailData?.personnelCode)
+                  // }
+                >
+                  Xem bảng công
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
     // </div>
   );

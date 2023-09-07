@@ -17,6 +17,7 @@ import {
 import Options from "../../components/Options";
 import Select from "react-select";
 import { Modal } from "react-bootstrap";
+import FormatDate from "../../components/FormatDate";
 
 export default function Staff() {
   const navigate = useNavigate();
@@ -398,7 +399,10 @@ export default function Staff() {
                           </tr>
                           <tr>
                             <th>Ngày sinh:</th>
-                            <td>{item?.birthDate}</td>
+                            <td>
+                              <FormatDate date={item?.birthDate} />
+                            </td>
+                            {/* <td>{item?.birthDate}</td> */}
                           </tr>
                           <tr>
                             <th>Bộ phận:</th>
@@ -421,7 +425,7 @@ export default function Staff() {
               <div className="pagination">
                 {currentPage != 1 && (
                   <div
-                    className="back-button-header"
+                    className="previous-page-button"
                     onClick={() => {
                       if (currentPage > 1) {
                         setCurrentPage(currentPage - 1);
@@ -435,7 +439,7 @@ export default function Staff() {
                 <span className="">{currentPage}</span>
                 {currentPage * recordsPerPage < totalRecords && (
                   <div
-                    className="back-button-header"
+                    className="after-page-button"
                     onClick={() => setCurrentPage(currentPage + 1)}
                   >
                     <FontAwesomeIcon icon={faChevronRight} />

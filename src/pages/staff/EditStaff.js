@@ -24,7 +24,7 @@ export default function EditStaff() {
 
   const { kitchenCode, fullName, isOutOfWord, startDate, ...newObject } =
     itemDetail;
-  console.log("nameObject...", newObject);
+  // console.log("nameObject...", newObject);
 
   const [splittedStrings, setSplittedStrings] = useState([]);
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function EditStaff() {
     itemDetail?.position
   );
 
-  console.log("newObject", newObject);
+  // console.log("newObject", newObject);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,12 +136,14 @@ export default function EditStaff() {
         // Nếu response không thành công, set state error và thông báo lỗi
         setError(true);
         setshowConfirm(false);
+        console.log("response", response);
       } else {
         const result = await response.text();
         navigate(-1);
       }
     } catch (error) {
       setError(true);
+      console.log("error", error);
     }
   };
 
@@ -328,7 +330,7 @@ export default function EditStaff() {
           <div className="edit-btn-submit">
             <button
               onClick={(e) => {
-                e.preventDefault(); // Ngăn chặn hành động mặc định của nút submit
+                e.preventDefault();
                 handleClickConfirm();
               }}
               type="submit"

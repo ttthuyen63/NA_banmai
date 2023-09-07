@@ -103,7 +103,10 @@ code {
   overflow: auto;
   height: 80vh;
 }
-
+.container {
+  overflow: auto;
+  height: 80vh;
+}
 .detail-header {
   display: flex;
   justify-content: center;
@@ -422,4 +425,29 @@ td {
 .note-password {
   color: gray;
   font-size: small;
+}
+
+.after-page-button {
+  padding-left: 20px;
+}
+
+.previous-page-button {
+  padding-right: 20px;
+}
+
+.after-page-button:hover,
+.previous-page-button:hover {
+  cursor: pointer;
+}
+
+.text-create-account {
+  color: #644bff;
+  text-decoration: underline;
+}
+.text-create-account:hover {
+  cursor: pointer;
+}
+.select-type-account {
+  width: 75%;
+  border-radius: 8px;
 }
