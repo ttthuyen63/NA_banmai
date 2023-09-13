@@ -22,12 +22,10 @@ export default function Login() {
         {
           username: username,
           password: password,
-          // "Content-Type": "application/json",
-          // returnSecureToken: true,
         },
         {
           headers: {
-            "Content-Type": "application/json",
+            // "Content-Type": "application/json",
             username: username,
             password: password,
           },
@@ -47,60 +45,11 @@ export default function Login() {
     }
   };
 
-  // useEffect(() => {
-  //   const storedRefreshToken = sessionStorage.getItem("refreshToken");
-  //   if (token !== null) {
-  //     navigate("/");
-  //   }
-  // }, [token, navigate]);
   useEffect(() => {
     if (token !== null) {
       navigate("/");
-    } else if (refreshToken !== null) {
-      // Check if the current API request was unauthorized (401)
-      axios.interceptors.response.use(
-        (response) => response,
-        async (error) => {
-          if (error.response && error.response.status === 403) {
-            try {
-              // Refresh the token using the refresh token
-              const refreshResponse = await axios.get(
-                `${urlAdmin}/authentication/authenticated/refresh-token`,
-                {
-                  refreshToken: `Bearer ${refreshToken}`,
-                }
-              );
-
-              const newAccessToken =
-                refreshResponse?.data?.data?.tokens?.accessToken;
-
-              // Update the token in Redux store
-              dispatch(login(newAccessToken));
-
-              // Retry the original request with the new token
-              error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-              return axios.request(error.config);
-            } catch (refreshError) {
-              setError(true); // Handle refresh error
-              throw refreshError;
-            }
-          }
-          throw error;
-        }
-      );
     }
   }, [token, navigate]);
-  useEffect(() => {
-    // Xóa Refresh Token khi người dùng đăng xuất hoặc đóng tab
-    const handleBeforeUnload = () => {
-      sessionStorage.removeItem("refreshToken");
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
 
   return (
     <Container>
@@ -132,7 +81,13 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <button className={styles.btnLogin} onClick={() => submit()}>
+            <button
+              className={styles.btnLogin}
+              onClick={(e) => {
+                e.preventDefault();
+                submit();
+              }}
+            >
               Đăng nhập
             </button>
             <div className={styles.forgotPass}>

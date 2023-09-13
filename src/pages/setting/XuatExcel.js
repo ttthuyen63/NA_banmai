@@ -17,6 +17,9 @@ export default function XuatExcel() {
   const handleBackClick = () => {
     navigate(-1);
   };
+  const gotoPreview = () => {
+    navigate("/previewTimesheet");
+  };
   return (
     <div>
       <div className="detail-header">
@@ -42,7 +45,7 @@ export default function XuatExcel() {
           </div>
         </div>
         <div className={styles.ExcelBtn}>
-          <button>Xem trước</button>
+          <button onClick={() => gotoPreview()}>Xem trước</button>
           <button>Tải xuống</button>
         </div>
       </div>
@@ -63,7 +66,7 @@ export default function XuatExcel() {
           </div>
         </div>
         <div className={styles.ExcelBtn}>
-          <button>Xem trước</button>
+          <button onClick={() => gotoPreview()}>Xem trước</button>
           <button>Tải xuống</button>
         </div>
       </div>

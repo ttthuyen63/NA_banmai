@@ -26,6 +26,8 @@ import store from "./redux/store";
 import ProtectRouter from "./components/ProtectRouter";
 import XuatExcel from "./pages/setting/XuatExcel";
 import ChangePassword from "./pages/setting/ChangePassword";
+import PreviewTimesheet from "./pages/setting/PreviewTimesheet";
+import Timesheets from "./pages/extend/Timesheets";
 
 const router = createBrowserRouter([
   {
@@ -153,6 +155,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/timesheets/:kitchenCode",
+    element: (
+      <ProtectRouter>
+        <Timesheets />
+      </ProtectRouter>
+    ),
+  },
+  {
     path: "/setting",
     element: (
       <ProtectRouter>
@@ -165,6 +175,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectRouter>
         <XuatExcel />
+      </ProtectRouter>
+    ),
+  },
+  {
+    path: "/previewTimesheet",
+    element: (
+      <ProtectRouter>
+        <PreviewTimesheet />
       </ProtectRouter>
     ),
   },

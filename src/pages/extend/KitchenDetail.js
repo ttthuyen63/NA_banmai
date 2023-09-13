@@ -12,6 +12,7 @@ export default function KitchenDetail() {
   const [kitchenDetailData, setKitchenDetailData] = useState([]);
   const [showDel, setshowDel] = useState(false);
   const [deleteCode, setdeleteCode] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const token = sessionStorage.getItem("token");
   useEffect(() => {
     getKitchenDetailApi();
@@ -41,6 +42,8 @@ export default function KitchenDetail() {
       console.log(data);
     } catch (error) {
       console.log("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
     console.log("kitchenCode", kitchenCode);
   };
@@ -96,6 +99,10 @@ export default function KitchenDetail() {
   const gotoKitchenStaff = (kitchenCode) => {
     navigate("/kitchenStaffDetail/" + kitchenCode);
   };
+  const gotoTimesheets = (kitchenCode) => {
+    navigate("/timesheets/" + kitchenCode);
+  };
+
   return (
     // <div className="container">
     <div className="staffDetail">
@@ -142,62 +149,76 @@ export default function KitchenDetail() {
         </div>
         <div className="title-header">Thông tin bếp</div>
       </div>
-      <div className="content">
-        <div className="row">
-          <div className="col-sm-6">
-            <div className="info-staff">
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Mã bếp:</th>
-                    <td>{kitchenDetailData?.kitchenCode}</td>
-                  </tr>
-                  <tr>
-                    <th>Tên bếp:</th>
-                    <td>{kitchenDetailData?.name}</td>
-                  </tr>
-                  <tr>
-                    <th>Địa chỉ:</th>
-                    <td>{kitchenDetailData?.location}</td>
-                  </tr>
-                </tbody>
-              </table>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="content">
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="info-staff">
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>Mã bếp:</th>
+                      <td>{kitchenDetailData?.kitchenCode}</td>
+                    </tr>
+                    <tr>
+                      <th>Tên bếp:</th>
+                      <td>{kitchenDetailData?.name}</td>
+                    </tr>
+                    <tr>
+                      <th>Địa chỉ:</th>
+                      <td>{kitchenDetailData?.location}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-          <div className="col-sm-6">
-            <div className="btn-detail edit-button">
-              <button
-                onClick={() => {
-                  gotoEdit(kitchenDetailData?.kitchenCode, kitchenDetailData);
-                }}
-                className="btn btn-primary"
-              >
-                Chỉnh sửa thông tin
-              </button>
-            </div>
-            <div className="btn-detail delete-button">
-              <button
-                className="btn btn-primary"
-                onClick={() =>
-                  handleClickDelete(kitchenDetailData?.personnelCode)
-                }
-              >
-                Xóa
-              </button>
-            </div>
-            <div className="btn-detail account-button">
-              <button
-                onClick={() => {
-                  gotoKitchenStaff(kitchenDetailData?.kitchenCode);
-                }}
-                className="btn btn-primary"
-              >
-                Xem danh sách thành viên
-              </button>
+            <div className="col-sm-6">
+              <div className="btn-detail edit-button">
+                <button
+                  onClick={() => {
+                    gotoEdit(kitchenDetailData?.kitchenCode, kitchenDetailData);
+                  }}
+                  className="btn btn-primary"
+                >
+                  Chỉnh sửa thông tin
+                </button>
+              </div>
+              <div className="btn-detail delete-button">
+                <button
+                  className="btn btn-primary"
+                  onClick={() =>
+                    handleClickDelete(kitchenDetailData?.personnelCode)
+                  }
+                >
+                  Xóa
+                </button>
+              </div>
+              <div className="btn-detail account-button">
+                <button
+                  onClick={() => {
+                    gotoKitchenStaff(kitchenDetailData?.kitchenCode);
+                  }}
+                  className="btn btn-primary"
+                >
+                  Xem danh sách thành viên
+                </button>
+              </div>
+              <div className="btn-detail attendance-button">
+                <button
+                  onClick={() => {
+                    gotoTimesheets(kitchenDetailData?.kitchenCode);
+                  }}
+                  className="btn btn-primary"
+                >
+                  Xem bảng chấm công
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
     // </div>
   );

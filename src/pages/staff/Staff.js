@@ -65,7 +65,7 @@ export default function Staff() {
     setFilterApiCalled(false);
     var myHeaders = new Headers();
     myHeaders.append("Origin", `${localUrl}`);
-    myHeaders.append("Content-Type", "application/json");
+    // myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 
     const queryParams = new URLSearchParams({

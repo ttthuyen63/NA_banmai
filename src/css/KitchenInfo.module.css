@@ -8,11 +8,11 @@
 }
 
 .infoBox {
-  flex-basis: calc(33% - 2px); /* Chia cột thành 33% với khoảng cách 10px */
+flex-basis: calc(33% - 2px); /* Chia cột thành 33% với khoảng cách 10px */
   padding: 5px;
   border: 1px solid #b1d3fe;
   box-sizing: border-box;
-  border-radius: 12px;
+  border-radius: 12px;  
 }
 
 .titleInfo {

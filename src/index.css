@@ -273,6 +273,7 @@ td {
   padding: 3px 20px;
   flex-direction: row;
   justify-content: space-around;
+  position: relative;
 }
 
 .header_kitchen_left,
@@ -369,6 +370,7 @@ td {
   justify-content: center;
   align-items: center;
   background-color: white;
+  border-radius: 50px;
 }
 
 .advanced-search {
@@ -450,4 +452,166 @@ td {
 .select-type-account {
   width: 75%;
   border-radius: 8px;
+}
+
+.timesheet {
+  width: 100%;
+  border: 1px solid #dcdcdc;
+}
+
+.timesheet th {
+  border: 1px solid #dcdcdc;
+  background-color: #f0f0f0;
+  width: calc(100% / 11);
+  text-align: center;
+}
+.timesheet td {
+  border: 1px solid #dcdcdc;
+  text-align: center;
+}
+
+.chooseDate {
+  background-color: white;
+  padding: 7px;
+  color: black;
+  border-radius: 50px;
+  margin-right: 3px;
+  position: relative;
+  /* height: 42px; */
+}
+
+.chooseDate input {
+  border: none;
+  width: 120px;
+}
+
+.chooseDate span {
+  padding: 0px 15px;
+}
+
+.confirmContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+  width: 75%;
+}
+
+.confirmContainer input {
+  width: 20px;
+  height: 20px;
+}
+
+.confirmContainer button {
+  height: 30px;
+  width: 65px;
+  border-radius: 50px;
+  background-color: white;
+  border: none;
+  margin: 0px 3px;
+}
+
+.timesheets_kitchen-code {
+  background-color: white;
+  color: black;
+  border-radius: 50px;
+  width: 50%;
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content-timesheets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  position: relative;
+  overflow: auto;
+}
+.timesheets-detail {
+  flex-basis: calc(20% - 2px); /* Chia cột thành 33% với khoảng cách 10px */
+  padding: 5px;
+  border: 1px solid #b1d3fe;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: none;
+}
+
+.detail-timesheets-header {
+  display: flex;
+}
+
+.detail-title {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  width: 75%;
+  background-color: #99c8fe;
+}
+
+.detail-title input[type="checkbox"] {
+  margin-right: auto;
+  height: 20px;
+  width: 20px;
+  margin-left: 10px;
+}
+
+.detail-title h4 {
+  text-align: center; /* Căn giữa theo chiều ngang */
+  flex-grow: 1; /* Cho phép h4 mở rộng để lấp đầy không gian còn trống */
+}
+
+.detail-timesheets-header .detail-attendance {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.timesheets-table {
+  width: 100%;
+}
+
+.timesheets-table th {
+  padding: 2px 0px;
+  width: 40%;
+  font-weight: 400;
+}
+.timesheets-table td {
+  width: 60%;
+}
+
+.btn-detail-attendance {
+  height: 35px;
+  background-color: #99c8fe;
+  border-radius: 50px;
+  width: 30%;
+  font-weight: bolder;
+  border: none;
+}
+
+.chooseDateDropdown {
+  position: fixed;
+  z-index: 1;
+  height: 48px;
+  width: 320px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  top: 48px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.dropdown-timesheets {
+  width: 200px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  outline: none;
+  background-color: white;
 }

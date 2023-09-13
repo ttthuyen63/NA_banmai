@@ -5,7 +5,7 @@ import axios from "axios";
 const initialState = {
   // khi khởi tạo lấy giá trị khởi tạo từ sessionStorage
   token: sessionStorage.getItem("token"),
-  refreshToken: sessionStorage.getItem("torefreshTokenken"),
+  refreshToken: sessionStorage.getItem("refreshTokenken"),
 };
 
 const userSlice = createSlice({
