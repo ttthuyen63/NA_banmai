@@ -9,44 +9,35 @@ export default function ProtectRouter(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.userReducer.token);
-  const tokenExpiration = useSelector(
-    (state) => state.userReducer.tokenExpiration
-  );
+  // const tokenExpiration = useSelector(
+  //   (state) => state.userReducer.tokenExpiration
+  // );
   const refreshToken = sessionStorage.getItem("refreshToken");
   const accessToken = sessionStorage.getItem("accessToken");
   console.log("refreshToken", refreshToken);
 
   useEffect(() => {
     const getRefreshToken = async () => {
-      var myHeaders = new Headers();
-      myHeaders.append("refreshToken", `Bearer ${refreshToken}`);
-      myHeaders.append("Authorization", `Bearer ${accessToken}`);
+      const refreshToken = sessionStorage.getItem("refreshToken");
+      const accessToken = sessionStorage.getItem("accessToken");
 
-      var requestOptions = {
+      const config = {
         method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
+        url: `${urlAdmin}/authentication/authenticated/refresh-token`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          refreshToken: `Bearer ${refreshToken}`,
+        },
       };
-      try {
-        // const response = await axios.get(
-        //   `${urlAdmin}/authentication/authenticated/refresh-token`,
-        //   {
-        //     headers: {
-        //       refreshToken: `Bearer ${refreshToken}`,
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //   }
-        // );
-        const response = await fetch(
-          `${urlAdmin}/authentication/authenticated/refresh-token`,
-          requestOptions
-        );
 
-        const result = await response.json();
+      try {
+        const response = await axios(config);
+        const result = response.data;
         console.log("Response", result);
 
         const newAccessToken = result?.data?.data?.tokens?.accessToken;
         const newRefreshToken = result?.data?.data?.tokens?.refreshToken;
+
         if (newAccessToken) {
           dispatch(login(newAccessToken));
           // Lưu lại accessToken mới vào sessionStorage
@@ -61,9 +52,9 @@ export default function ProtectRouter(props) {
       }
     };
 
-    if (tokenExpiration && new Date(tokenExpiration) < new Date()) {
-      getRefreshToken();
-    }
+    // if (tokenExpiration && new Date(tokenExpiration) < new Date()) {
+    //   getRefreshToken();
+    // }
 
     const refreshInterval = 60 * 60 * 1000; // 1 tiếng
     const refreshTimer = setInterval(getRefreshToken, refreshInterval);
@@ -71,7 +62,7 @@ export default function ProtectRouter(props) {
     return () => {
       clearInterval(refreshTimer);
     };
-  }, [tokenExpiration, refreshToken, dispatch]);
+  }, [refreshToken, dispatch]);
   return token !== null ? (
     props.children
   ) : (

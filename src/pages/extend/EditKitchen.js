@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
 import { Button, Container, Modal, Tooltip } from "react-bootstrap";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function EditKitchen() {
   const navigate = useNavigate();
@@ -26,35 +27,34 @@ export default function EditKitchen() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = sessionStorage.getItem("token");
-    var myHeaders = new Headers();
-    myHeaders.append("kitchenCode", `${kitchenCode}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    var raw = JSON.stringify({
+    const dataToSend = {
       data: {
         ...itemDetail,
         name: name,
         location: location,
       },
       updateFields: ["name", "location"],
-    });
+    };
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
+    const config = {
+      headers: {
+        kitchenCode: kitchenCode,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/kitchen/management/update`,
-        requestOptions
+        dataToSend,
+        config
       );
-      const result = await response.text();
+
+      const result = response.data;
       console.log(result);
-      navigate("/kitchenManager"); // Chuyển hướng sau khi tạo thành công
+      navigate("/kitchenManager"); // Chuyển hướng sau khi cập nhật thành công
     } catch (error) {
       console.log("Error:", error);
     }

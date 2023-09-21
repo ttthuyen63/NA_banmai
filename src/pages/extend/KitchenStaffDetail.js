@@ -10,6 +10,7 @@ import KitchenStaffInfo from "../../components/KitchenStaffInfo";
 import { url } from "../../config/api";
 import Options from "../../components/Options";
 import FormatDate from "../../components/FormatDate";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function KitchenStaffDetail() {
   const navigate = useNavigate();
@@ -24,32 +25,31 @@ export default function KitchenStaffDetail() {
   const [isLoading, setIsLoading] = useState(true);
 
   const getKitchenStaffApi = async (page) => {
-    var myHeaders = new Headers();
-    myHeaders.append("kitchenCode", `${kitchenCode}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
+    const config = {
+      headers: {
+        kitchenCode: kitchenCode,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     const queryParams = new URLSearchParams({
       page: currentPage - 1, // Trang bắt đầu từ 0
       size: recordsPerPage,
     });
 
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
     try {
-      const response = await fetch(
+      const response = await axiosInstance.get(
         `${url}/personnel/management/search/search-by-kitchen-code?${queryParams.toString()}`,
-        requestOptions
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data?.content;
       const startIndex = (currentPage - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
       const slicedData = data.slice(startIndex, endIndex);
+
       setKitchenStaffData(data);
       setDisplayedData(slicedData);
       setTotalRecords(result?.data?.totalElements);

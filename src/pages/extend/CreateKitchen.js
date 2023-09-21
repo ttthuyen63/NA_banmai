@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { url } from "../../config/api";
 import { Button, Modal } from "react-bootstrap";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function CreateKitchen() {
   const navigate = useNavigate();
@@ -16,9 +17,6 @@ export default function CreateKitchen() {
   const handleSubmit = async (e) => {
     const token = sessionStorage.getItem("token");
     console.log("token", token);
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const dataToSend = {
       kitchenCode: kitchenCodeRef?.current?.value,
@@ -26,19 +24,21 @@ export default function CreateKitchen() {
       location: locationRef?.current?.value,
     };
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(dataToSend),
-      redirect: "follow",
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/kitchen/management/create`,
-        requestOptions
+        dataToSend,
+        config
       );
-      const result = await response.text();
+
+      const result = response.data;
       console.log(result);
       navigate("/kitchenManager"); // Chuyển hướng sau khi tạo thành công
     } catch (error) {

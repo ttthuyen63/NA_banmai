@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
 import Select from "react-select";
 import { Button, Container, Modal, Tooltip } from "react-bootstrap";
+import axiosInstance from "../../components/axiosInstance";
 
 const customStyles = {
   control: (provided, state) => ({
@@ -91,12 +92,7 @@ export default function EditStaff() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = sessionStorage.getItem("token");
-    var myHeaders = new Headers();
-    myHeaders.append("personnelCode", `${personnelCode}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    var raw = JSON.stringify({
+    let data = JSON.stringify({
       data: {
         ...newObject,
         basicSalary: basicSalary,
@@ -120,25 +116,28 @@ export default function EditStaff() {
       ],
     });
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
+    let config = {
+      method: "post",
+      // maxBodyLength: Infinity,
+      url: `${url}/personnel/management/update`,
+      headers: {
+        personnelCode: `${personnelCode}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      data: data,
     };
 
     try {
-      const response = await fetch(
-        `${url}/personnel/management/update`,
-        requestOptions
-      );
-      if (!response.ok) {
+      const response = await axiosInstance.post(config.url, data, config);
+      if (response.status !== 200) {
         // Nếu response không thành công, set state error và thông báo lỗi
         setError(true);
         setshowConfirm(false);
         console.log("response", response);
+        console.log("error", error);
       } else {
-        const result = await response.text();
+        // const result = await response.text();
         navigate(-1);
       }
     } catch (error) {

@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { url } from "../../config/api";
 import { typeImplementation } from "@testing-library/user-event/dist/type/typeImplementation";
 import { Button, Modal } from "react-bootstrap";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function CreateStaff() {
   const navigate = useNavigate();
@@ -62,11 +63,9 @@ export default function CreateStaff() {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     const token = sessionStorage.getItem("token");
     console.log("token", token);
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const dataToSend = {
       firstName: firstNameRef?.current?.value,
@@ -81,39 +80,43 @@ export default function CreateStaff() {
       position: selectedPosition?.value,
     };
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(dataToSend),
-      redirect: "follow",
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/personnel/management/create`,
-        requestOptions
+        dataToSend,
+        config
       );
-      if (!response.ok) {
-        const errorResponse = await response.json(); // Chuyển response thành JSON để truy cập thông tin lỗi
+
+      if (!response.data.success) {
+        // Xử lý lỗi khi tạo nhân viên không thành công
+        const errorResponse = response.data;
         setshowValidateError(
           errorResponse.errorMessage.includes("Validation") || null
         );
-        setshowDupplucateError(errorResponse.errorCode == 1001 || null);
+        setshowDupplucateError(errorResponse.errorCode === 1001 || null);
         console.log("Error response:", errorResponse);
         setshowConfirm(false);
       } else {
-        const result = await response.text();
+        // Xử lý khi tạo nhân viên thành công
+        const result = response.data;
         console.log(result);
         setshowConfirm(false);
         setshowDialog(true);
         const timeOut = setTimeout(() => {
           navigate(-1);
         }, 2000);
-        // navigate(-1);
       }
     } catch (error) {
+      console.log("Error:", error);
+      // Xử lý lỗi khi gọi API không thành công
       // setError(true);
-      console.log("error", typeof error);
     }
   };
   const handleClickConfirm = () => {

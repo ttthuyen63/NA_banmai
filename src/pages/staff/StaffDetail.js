@@ -7,6 +7,7 @@ import { currencyFormat } from "../../ultils/constant";
 import { Button, Container, Modal, Tooltip } from "react-bootstrap";
 import Options from "../../components/Options";
 import FormatDate from "../../components/FormatDate";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function StaffDetail() {
   const params = useParams();
@@ -22,25 +23,20 @@ export default function StaffDetail() {
     getpersonnelDetailApi();
   }, []);
   const getpersonnelDetailApi = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("personnelCode", `${personnelCode}`);
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    // var raw = "";
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      // body: raw,
-      redirect: "follow",
+    const config = {
+      headers: {
+        personnelCode: personnelCode,
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.get(
         `${url}/personnel/management/search/find-by-code`,
-        requestOptions
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data;
       setpersonnelDetailData(data);
       console.log(data);
@@ -56,22 +52,20 @@ export default function StaffDetail() {
     getaccountByCodeApi();
   }, []);
   const getaccountByCodeApi = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("personnelCode", `${personnelCode}`);
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
+    const config = {
+      headers: {
+        personnelCode: personnelCode,
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.get(
         `${url}/account/management/search/find-by-personnel-code`,
-        requestOptions
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data;
       setaccountByCodelData(data);
       console.log(data);
@@ -102,30 +96,34 @@ export default function StaffDetail() {
   const handleDelete = async () => {
     const token = sessionStorage.getItem("token");
     console.log("token", token);
-    var myHeaders = new Headers();
-    myHeaders.append("personnelCode", `${personnelCode}`);
-    myHeaders.append("removeType", "REMOVE");
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      redirect: "follow",
+    const dataToSend = {
+      personnelCode: personnelCode,
+      removeType: "REMOVE",
+    };
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/personnel/management/remove`,
-        requestOptions
+        dataToSend,
+        config
       );
-      const result = await response.text();
+
+      const result = response.data;
       console.log(result);
       navigate(-1);
     } catch (error) {
       console.log("Error:", error);
     }
   };
+
   const gotoAccount = (personnelCode) => {
     if (accountByCodelData == null) {
       navigate("/emptyAccount/" + personnelCode, {

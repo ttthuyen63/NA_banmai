@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
+import axiosInstance from "../../components/axiosInstance";
 import Select from "react-select";
 
 export default function AddAccount() {
@@ -40,9 +41,6 @@ export default function AddAccount() {
   const handleSubmit = async (e) => {
     const token = sessionStorage.getItem("token");
     console.log("token", token);
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const dataToSend = {
       username: userNameRef?.current?.value,
@@ -52,27 +50,29 @@ export default function AddAccount() {
       personnelCode: personnelCode,
     };
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(dataToSend),
-      redirect: "follow",
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/account/management/create/user`,
-        requestOptions
+        dataToSend,
+        config
       );
-      if (!response.ok) {
-        const errorResponse = await response.json(); // Chuyển response thành JSON để truy cập thông tin lỗi
+
+      if (!response.status === 200) {
+        const errorResponse = response.data;
         // setshowValidateError(
         //   errorResponse.errorMessage.includes("Validation") || null
         // );
         // setshowDupplucateError(errorResponse.errorCode == 1001 || null);
         console.log("Error response:", errorResponse);
       } else {
-        const result = await response.text();
+        const result = response.data;
         console.log(result);
         setshowDialog(true);
         const timeOut = setTimeout(() => {
@@ -80,7 +80,7 @@ export default function AddAccount() {
         }, 2000);
       }
     } catch (error) {
-      console.log("error", typeof error);
+      console.log("Error:", error);
     }
   };
   const handleBackClick = () => {

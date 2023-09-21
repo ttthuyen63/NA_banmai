@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../components/axiosInstance";
 import { url } from "../../config/api";
 
 export default function UpdatePassword() {
@@ -14,10 +15,6 @@ export default function UpdatePassword() {
     event.preventDefault();
     const token = sessionStorage.getItem("token");
     console.log("token", token);
-    var myHeaders = new Headers();
-    myHeaders.append("accountId", `${accountByCodelData?.id}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const dataToSend = {
       username: accountByCodelData?.username,
@@ -25,30 +22,27 @@ export default function UpdatePassword() {
       retypeNewPassword: retypeNewPasswordRef?.current?.value,
     };
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(dataToSend),
-      redirect: "follow",
+    const config = {
+      headers: {
+        accountId: accountByCodelData?.id,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/account/management/update-password`,
-        requestOptions
+        dataToSend,
+        config
       );
-      const result = await response.text();
+
+      const result = response.data;
       console.log(result);
-      navigate(`/account/${accountByCodelData?.personnelCode}`); // Chuyển hướng sau khi tạo thành công
+      navigate(`/account/${accountByCodelData?.personnelCode}`); // Chuyển hướng sau khi cập nhật thành công
     } catch (error) {
       console.log("Error:", error);
     }
-    // if (newPassword === confirmNewPassword) {
-    //   // Gửi yêu cầu cập nhật mật khẩu đến máy chủ ở đây
-    //   setMessage("Mật khẩu đã được cập nhật thành công.");
-    // } else {
-    //   setMessage("Mật khẩu mới không trùng khớp.");
-    // }
   };
   const handleBackClick = () => {
     navigate(-1);

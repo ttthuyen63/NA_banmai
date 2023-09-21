@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { urlAdmin } from "../../config/api";
 import Options from "../../components/Options";
 import { Button, Modal } from "react-bootstrap";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -17,24 +18,19 @@ export default function Settings() {
     getusernameDataApi();
   }, []);
   const getusernameDataApi = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    // var raw = "";
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      // body: raw,
-      redirect: "follow",
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.get(
         `${urlAdmin}/authentication/authenticated/me`,
-        requestOptions
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data;
       setusernameData(data);
       console.log(data);
@@ -47,26 +43,22 @@ export default function Settings() {
   const handleSubmit = async (e) => {
     const token = sessionStorage.getItem("token");
     console.log("token", token);
-    var myHeaders = new Headers();
-    myHeaders.append(
-      "currentPassword",
-      `${currentPasswordRef?.current?.value}`
-    );
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
+    const config = {
+      headers: {
+        currentPassword: currentPasswordRef?.current?.value,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.get(
         `${urlAdmin}/authentication/authenticated/generate/token/change-password`,
-        requestOptions
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       console.log(result.data.changePasswordToken);
       sessionStorage.setItem(
         "tokenChangePassword",

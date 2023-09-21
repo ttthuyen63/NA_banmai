@@ -12,6 +12,7 @@ import {
 import KitchenInfo from "../../components/KitchenInfo";
 import { url, localUrl } from "../../config/api";
 import diacritics from "diacritics";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function KitchenManage() {
   const navigate = useNavigate();
@@ -27,9 +28,12 @@ export default function KitchenManage() {
   const recordsPerPage = 15;
   const token = sessionStorage.getItem("token");
   const getKitchenApi = async (page) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     const queryParams = new URLSearchParams({
       page: currentPage - 1, // Trang bắt đầu từ 0
@@ -38,21 +42,16 @@ export default function KitchenManage() {
       order: "ASC",
     });
 
-    var raw = JSON.stringify({});
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+    const dataToSend = {};
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/kitchen/management/search?${queryParams.toString()}`,
-        requestOptions
+        dataToSend,
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data?.content;
       setKitchenData(data);
       setTotalRecords(result?.data?.totalElements);
@@ -66,31 +65,28 @@ export default function KitchenManage() {
     setSearchApiCalled(true);
     const searchInput = diacritics.remove(searchInputRef?.current?.value);
     console.log("searchInput", searchInput);
-    var myHeaders = new Headers();
-    myHeaders.append("Origin", `${localUrl}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
-    myHeaders.append("filter", `${searchInput}`);
 
-    const queryParams = new URLSearchParams({
-      // filter: searchInputRef?.current?.value,
-    });
-
-    var raw = JSON.stringify({});
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
+    const config = {
+      headers: {
+        Origin: localUrl,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        filter: searchInput,
+      },
     };
 
+    const queryParams = new URLSearchParams();
+
+    const dataToSend = {};
+
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/kitchen/management/search?${queryParams.toString()}`,
-        requestOptions
+        dataToSend,
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data?.content;
       const startIndex = (currentPage - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;

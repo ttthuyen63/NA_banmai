@@ -1,16 +1,26 @@
-import { faChevronLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function Timesheets() {
   const navigate = useNavigate();
   const params = useParams();
   const kitchenCode = params.kitchenCode;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showDetail, setshowDetail] = useState(false);
+
   const [showDropdownDate, setShowDropdownDate] = useState(false);
   const fromDateRef = useRef();
   const toDateRef = useRef();
+  const recordsPerPage = 15;
   const handleBackClick = () => {
     navigate(-1);
     console.log("Back button clicked");
@@ -38,8 +48,89 @@ export default function Timesheets() {
     };
   }, []);
 
+  const handleClickDetail = () => {
+    setshowDetail(true);
+  };
+
+  const handleClose = () => {
+    setshowDetail(false);
+  };
+
   return (
     <div className="content">
+      <Modal show={showDetail} onHide={handleClose} size="lg">
+        <Modal.Header
+          closeButton
+          style={{ backgroundColor: "#99c8fe", textAlign: "center" }}
+        >
+          <Modal.Title style={{ margin: "auto" }}>
+            THÔNG TIN CHẤM CÔNG
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="row">
+          <div className="col-sm-6">
+            <h3>Nhanvien1</h3>
+            <table className="timesheets-detail-table">
+              <tbody>
+                <tr>
+                  <th>Họ và tên:</th>
+                  <td>scfsdv</td>
+                </tr>
+                <tr>
+                  <th>Hệ số lương:</th>
+                  <td>1.0</td>
+                </tr>
+                <tr>
+                  <th>Họp tại công ty:</th>
+                  <td>Có</td>
+                </tr>
+                <tr>
+                  <th>Hỗ trợ bếp:</th>
+                  <td>N/A</td>
+                </tr>
+                <tr>
+                  <th>Giao cơm:</th>
+                  <td>N/A</td>
+                </tr>
+                <tr>
+                  <th>Bếp được hỗ trợ:</th>
+                  <td>N/A</td>
+                </tr>
+                <tr>
+                  <th>Tình trạng:</th>
+                  <td>Chờ duyệt</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="col-sm-6"></div>
+        </Modal.Body>
+        <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            style={{
+              backgroundColor: "#baeaff",
+              border: "none",
+              color: "black",
+            }}
+            // onClick={() => handleDelete(item?.id)
+            // onClick={handleSubmit}
+            // }
+          >
+            Duyệt
+          </Button>
+          <Button
+            style={{
+              backgroundColor: "#ffbacf",
+              border: "none",
+              color: "black",
+            }}
+            onClick={handleClose}
+          >
+            Từ chối
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <div className="header-kitchen">
         <div className="header_kitchen_left">
           <div
@@ -51,32 +142,6 @@ export default function Timesheets() {
           >
             <FontAwesomeIcon icon={faChevronLeft} />
           </div>
-          {/* <div className="chooseDate">
-            <input type="date" ref={fromDateRef} />
-            <span>{" -> "}</span>
-            <input type="date" ref={toDateRef} />
-          </div> */}
-          {/* {showDropdown ? (
-            <div className="dropdown">
-            
-              <button onClick={() => setShowDropdownDate(!showDropdownDate)}>
-                Chọn thời gian
-              </button>
-            </div>
-          ) : (
-            <div className="chooseDate">
-              <input type="date" ref={fromDateRef} />
-              <span>{" -> "}</span>
-              <input type="date" ref={toDateRef} />
-            </div>
-          )}
-          {showDropdownDate && (
-            <div className="chooseDateDropdown">
-              <input type="date" ref={fromDateRef} />
-              <span>{" -> "}</span>
-              <input type="date" ref={toDateRef} />
-            </div>
-          )} */}
           <div className="date-container" style={{ position: "relative" }}>
             {showDropdown ? (
               <div>
@@ -135,48 +200,82 @@ export default function Timesheets() {
       </div>
       <div className="content-timesheets">
         <div className="timesheets-detail">
-          <div className="detail-timesheets-header">
-            <div className="detail-title">
-              <input type="checkbox" />
-              <h4>Nhanvien1</h4>
+          <div className="timesheets-info">
+            <div className="detail-timesheets-header">
+              <div className="detail-title">
+                <input type="checkbox" />
+                <h4>Nhanvien1</h4>
+              </div>
+              <div className="detail-attendance">Có mặt</div>
             </div>
-            <div className="detail-attendance">Có mặt</div>
+            <table className="timesheets-table">
+              <tbody>
+                <tr>
+                  <th style={{ textAlign: "center" }}>19-12-2020</th>
+                  <td style={{ textAlign: "center" }}>08:00 {"->"} 15:00</td>
+                </tr>
+                <tr>
+                  <th>Người chấm:</th>
+                  <td>scfsdv</td>
+                </tr>
+                <tr>
+                  <th>Hệ số lương:</th>
+                  <td>1.0</td>
+                </tr>
+                <tr>
+                  <th>Họp tại công ty:</th>
+                  <td>Có</td>
+                </tr>
+                <tr>
+                  <th>Hỗ trợ bếp:</th>
+                  <td>N/A</td>
+                </tr>
+                <tr>
+                  <th>Giao cơm:</th>
+                  <td>N/A</td>
+                </tr>
+                <tr>
+                  <th>Tình trạng:</th>
+                  <td>Chờ duyệt</td>
+                </tr>
+              </tbody>
+            </table>
+            <div>
+              <button
+                className="btn-detail-attendance"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleClickDetail();
+                }}
+              >
+                Xem thêm
+              </button>
+            </div>
           </div>
-          <table className="timesheets-table">
-            <tbody>
-              <tr>
-                <th style={{ textAlign: "center" }}>19-12-2020</th>
-                <td style={{ textAlign: "center" }}>08:00 {"->"} 15:00</td>
-              </tr>
-              <tr>
-                <th>Người chấm:</th>
-                <td>scfsdv</td>
-              </tr>
-              <tr>
-                <th>Hệ số lương:</th>
-                <td>1.0</td>
-              </tr>
-              <tr>
-                <th>Họp tại công ty:</th>
-                <td>Có</td>
-              </tr>
-              <tr>
-                <th>Hỗ trợ bếp:</th>
-                <td>N/A</td>
-              </tr>
-              <tr>
-                <th>Giao cơm:</th>
-                <td>N/A</td>
-              </tr>
-              <tr>
-                <th>Tình trạng:</th>
-                <td>Chờ duyệt</td>
-              </tr>
-            </tbody>
-          </table>
-          <div>
-            <button className="btn-detail-attendance">Xem thêm</button>
-          </div>
+        </div>
+        <div className="pagination">
+          {currentPage != 1 && (
+            <div
+              className="previous-page-button"
+              onClick={() => {
+                if (currentPage > 1) {
+                  setCurrentPage(currentPage - 1);
+                }
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </div>
+          )}
+
+          <span className="">{currentPage}</span>
+          {currentPage * recordsPerPage < totalRecords && (
+            <div
+              className="after-page-button"
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
 import { Button, Container, Modal, Tooltip } from "react-bootstrap";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function KitchenDetail() {
   const params = useParams();
@@ -18,26 +19,20 @@ export default function KitchenDetail() {
     getKitchenDetailApi();
   }, []);
   const getKitchenDetailApi = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("kitchenCode", `${kitchenCode}`);
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    // var raw = "";
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      // body: raw,
-      redirect: "follow",
+    const config = {
+      headers: {
+        kitchenCode: kitchenCode,
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.get(
         `${url}/kitchen/management/search/find-by-code`,
-        requestOptions
+        config
       );
-      const result = await response.json();
-      const data = result?.data;
+
+      const data = response.data?.data;
       setKitchenDetailData(data);
       console.log(data);
     } catch (error) {
@@ -45,6 +40,7 @@ export default function KitchenDetail() {
     } finally {
       setIsLoading(false);
     }
+
     console.log("kitchenCode", kitchenCode);
   };
 
@@ -71,26 +67,25 @@ export default function KitchenDetail() {
   const handleDelete = async () => {
     const token = sessionStorage.getItem("token");
     console.log("token", token);
-    var myHeaders = new Headers();
-    myHeaders.append("kitchenCode", `${kitchenCode}`);
-    // myHeaders.append("removeType", "REMOVE");
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      redirect: "follow",
+    const config = {
+      headers: {
+        kitchenCode: kitchenCode,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/kitchen/management/remove`,
-        requestOptions
+        {},
+        config
       );
-      const result = await response.text();
+
+      const result = response.data;
       console.log(result);
-      navigate(-1); // Chuyển hướng sau khi tạo thành công
+      navigate(-1); // Chuyển hướng sau khi xóa thành công
     } catch (error) {
       console.log("Error:", error);
     }

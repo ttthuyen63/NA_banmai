@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { urlAdmin } from "../../config/api";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function ChangePassword() {
   const navigate = useNavigate();
@@ -16,29 +17,28 @@ export default function ChangePassword() {
     const tokenChangePassword = sessionStorage.getItem("tokenChangePassword");
     console.log("token", token);
     console.log("tokenChangePassword", tokenChangePassword);
-    var myHeaders = new Headers();
-    myHeaders.append("changePasswordToken", `${tokenChangePassword}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const dataToSend = {
       newPassword: newPasswordRef?.current?.value,
       retypeNewPassword: retypeNewPasswordRef?.current?.value,
     };
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(dataToSend),
-      redirect: "follow",
+    const config = {
+      headers: {
+        changePasswordToken: tokenChangePassword,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${urlAdmin}/authentication/authenticated/change-password`,
-        requestOptions
+        dataToSend,
+        config
       );
-      const result = await response.text();
+
+      const result = response.data;
       console.log(result);
       navigate(`/setting`);
     } catch (error) {

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { url } from "../../config/api";
-import CryptoJS from "crypto-js";
+import axiosInstance from "../../components/axiosInstance";
 import { useDispatch } from "react-redux";
 import { setAccount } from "../../redux/accountSlice";
 import Options from "../../components/Options";
@@ -26,26 +26,20 @@ export default function Account() {
     getaccountByCodeApi();
   }, []);
   const getaccountByCodeApi = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("personnelCode", `${personnelCode}`);
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    // var raw = "";
-
-    var requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      // body: raw,
-      redirect: "follow",
+    const config = {
+      headers: {
+        personnelCode: personnelCode,
+        Authorization: `Bearer ${token}`,
+      },
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.get(
         `${url}/account/management/search/find-by-personnel-code`,
-        requestOptions
+        config
       );
-      const result = await response.json();
-      const data = result?.data;
+
+      const data = response.data;
       setaccountByCodelData(data);
       dispatch(setAccount(data));
       console.log(data);

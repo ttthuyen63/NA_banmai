@@ -378,7 +378,8 @@ td {
   z-index: 1;
   height: 200px;
   width: 280px;
-  margin-left: 30px;
+  margin-left: 7%;
+  /* margin-left: 30px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -523,20 +524,31 @@ td {
 }
 
 .content-timesheets {
+  /* display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  position: relative; */
+  height: 80vh;
+  overflow: auto;
+}
+
+.timesheets-detail {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   padding: 5px;
   position: relative;
-  overflow: auto;
 }
-.timesheets-detail {
-  flex-basis: calc(20% - 2px); /* Chia cột thành 33% với khoảng cách 10px */
+
+.timesheets-info {
   padding: 5px;
   border: 1px solid #b1d3fe;
   box-sizing: border-box;
   border-radius: 12px;
-  border: none;
+  /* border: none; */
+  height: 320px;
+  width: 360px;
 }
 
 .detail-timesheets-header {
@@ -590,6 +602,7 @@ td {
   width: 30%;
   font-weight: bolder;
   border: none;
+  margin-top: 10px;
 }
 
 .chooseDateDropdown {
@@ -614,4 +627,8 @@ td {
   border-radius: 50px;
   outline: none;
   background-color: white;
+}
+
+.modal-timesheets{
+  width: 75%;
 }

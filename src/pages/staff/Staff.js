@@ -18,6 +18,7 @@ import Options from "../../components/Options";
 import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import FormatDate from "../../components/FormatDate";
+import axiosInstance from "../../components/axiosInstance";
 
 export default function Staff() {
   const navigate = useNavigate();
@@ -63,34 +64,30 @@ export default function Staff() {
   const getpersonnelSearchApi = async (page) => {
     setSearchApiCalled(true);
     setFilterApiCalled(false);
-    var myHeaders = new Headers();
-    myHeaders.append("Origin", `${localUrl}`);
-    // myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    const queryParams = new URLSearchParams({
-      // page: currentPage - 1, // Trang bắt đầu từ 0
-      // size: recordsPerPage,
-    });
+    const config = {
+      headers: {
+        Origin: localUrl,
+        // 'Content-Type': 'application/json', // Bạn không cần thiết đặt 'Content-Type' ở đây nếu bạn gửi dữ liệu JSON bằng phương thức POST.
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
-    var raw = JSON.stringify({
+    const queryParams = new URLSearchParams();
+
+    const requestData = {
       personnelCode: personnelCodeRef?.current?.value,
       name: personnelNameRef?.current?.value,
-    });
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/personnel/management/search?${queryParams.toString()}`,
-        requestOptions
+        requestData,
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data?.content;
       const startIndex = (currentPage - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
@@ -107,34 +104,30 @@ export default function Staff() {
   const getpersonnelFilterApi = async (page) => {
     setFilterApiCalled(true);
     setSearchApiCalled(false);
-    var myHeaders = new Headers();
-    myHeaders.append("Origin", `${localUrl}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    const queryParams = new URLSearchParams({
-      // page: currentPage - 1, // Trang bắt đầu từ 0
-      // size: recordsPerPage,
-    });
+    const config = {
+      headers: {
+        Origin: localUrl,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
-    var raw = JSON.stringify({
+    const queryParams = new URLSearchParams();
+
+    const requestData = {
       part: selectedPart?.value,
       position: selectedPosition?.value,
-    });
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
     };
 
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/personnel/management/search?${queryParams.toString()}`,
-        requestOptions
+        requestData,
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data?.content;
       const startIndex = (currentPage - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
@@ -160,10 +153,13 @@ export default function Staff() {
   }, [currentPage, searchApiCalled, filterApiCalled]);
 
   const getpersonnelApi = async (page) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Access-Control-Allow-Origin", `${localUrl}`);
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
+    const config = {
+      headers: {
+        "Access-Control-Allow-Origin": localUrl,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     const queryParams = new URLSearchParams({
       page: currentPage - 1, // Trang bắt đầu từ 0
@@ -172,21 +168,14 @@ export default function Staff() {
       order: "ASC",
     });
 
-    var raw = JSON.stringify({});
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
     try {
-      const response = await fetch(
+      const response = await axiosInstance.post(
         `${url}/personnel/management/search?${queryParams.toString()}`,
-        requestOptions
+        {},
+        config
       );
-      const result = await response.json();
+
+      const result = response.data;
       const data = result?.data?.content;
       setpersonnelData(data);
       setTotalRecords(result?.data?.totalElements);
