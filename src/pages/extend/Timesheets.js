@@ -1,12 +1,19 @@
 import {
+  faCheck,
   faChevronLeft,
   faChevronRight,
   faSearch,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import axiosInstance from "../../components/axiosInstance";
+import { url } from "../../config/api";
+import FormatDate from "../../components/FormatDate";
+import FormatBoolean from "../../components/Format";
+import Format from "../../components/Format";
 
 export default function Timesheets() {
   const navigate = useNavigate();
@@ -14,109 +21,203 @@ export default function Timesheets() {
   const kitchenCode = params.kitchenCode;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showConfirm, setshowConfirm] = useState(false);
   const [showDetail, setshowDetail] = useState(false);
+  const [timesheetKitchenData, settimesheetKitchenData] = useState([]);
+  const [timesheetDetailData, settimesheetDetailData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const chooseDateRef = useRef();
+  const [chooseDate, setchooseDate] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
+  const [isHeaderCheckboxChecked, setIsHeaderCheckboxChecked] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
-  const [showDropdownDate, setShowDropdownDate] = useState(false);
   const fromDateRef = useRef();
   const toDateRef = useRef();
-  const recordsPerPage = 15;
+  const recordsPerPage = 10;
+  const token = sessionStorage.getItem("token");
+  useEffect(() => {
+    getTimesheetApi();
+  }, [chooseDate]);
+  const getTimesheetApi = async () => {
+    const config = {
+      headers: {
+        kitchenCode: kitchenCode,
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const queryParams = new URLSearchParams({
+      page: currentPage - 1, // Trang bắt đầu từ 0
+      size: recordsPerPage,
+    });
+
+    const dataToSend = {
+      fromValue: chooseDate,
+      toValue: chooseDate,
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        `${url}/timesheet/management/view/view-by-kitchen-code?${queryParams.toString()}`,
+        dataToSend,
+        config
+      );
+
+      const result = response?.data;
+      const data = result?.data?.content;
+      settimesheetKitchenData(data);
+      console.log(data);
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleBackClick = () => {
     navigate(-1);
     console.log("Back button clicked");
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1650) {
-        setShowDropdown(true);
-      } else {
-        setShowDropdown(false);
-        setShowDropdownDate(false);
-      }
+  const handleClickDetail = async (code) => {
+    const config = {
+      headers: {
+        personnelCode: code,
+        Authorization: `Bearer ${token}`,
+      },
     };
 
-    // Thêm sự kiện lắng nghe sự thay đổi kích thước của cửa sổ
-    window.addEventListener("resize", handleResize);
+    const queryParams = new URLSearchParams({
+      page: currentPage - 1, // Trang bắt đầu từ 0
+      size: recordsPerPage,
+    });
 
-    // Kiểm tra ban đầu khi component được tạo
-    handleResize();
-
-    // Loại bỏ sự kiện lắng nghe khi component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    const dataToSend = {
+      fromValue: chooseDate,
+      toValue: chooseDate,
     };
-  }, []);
 
-  const handleClickDetail = () => {
+    try {
+      const response = await axiosInstance.post(
+        `${url}/timesheet/management/view/view-by-personnel-code?${queryParams.toString()}`,
+        dataToSend,
+        config
+      );
+
+      const result = response?.data;
+      const data = result?.data?.content;
+      settimesheetDetailData(data);
+      console.log(data);
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
     setshowDetail(true);
   };
 
+  const handleApprove = async (e) => {
+    e.preventDefault();
+    console.log("Handle Approve button clicked");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    // const queryParams = new URLSearchParams({
+    //   // page: currentPage - 1, // Trang bắt đầu từ 0
+    //   // size: recordsPerPage,
+    // });
+
+    let data = JSON.stringify({
+      approveType: "APPROVE",
+      timesheetRawIds: selectedIds,
+    });
+
+    try {
+      const response = await axiosInstance.post(
+        `${url}/timesheet/management/kitchen/timesheet/approve`,
+        data,
+        config
+      );
+
+      const result = response?.data;
+      // const data = result?.data?.content;
+      settimesheetKitchenData(result);
+      console.log(result);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
   const handleClose = () => {
+    setshowConfirm(false);
     setshowDetail(false);
   };
 
+  const handleTabClick = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  const handleHeaderCheckboxChange = () => {
+    setIsHeaderCheckboxChecked(!isHeaderCheckboxChecked);
+    const updatedTimesheetKitchenData = timesheetKitchenData.map((item) => ({
+      ...item,
+      isChecked: !isHeaderCheckboxChecked,
+    }));
+    settimesheetKitchenData(updatedTimesheetKitchenData);
+  };
+
+  const handleCheckboxChange = (itemId) => {
+    const checkbox = document.querySelector(`input[data-id="${itemId}"]`);
+    const id = checkbox.getAttribute("data-id");
+
+    if (selectedIds.includes(id)) {
+      const updatedSelectedIds = selectedIds.filter(
+        (selectedId) => selectedId !== id
+      );
+      setSelectedIds(updatedSelectedIds);
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+
+    const updatedTimesheetKitchenData = timesheetKitchenData.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          isChecked: !item.isChecked,
+        };
+      }
+      return item;
+    });
+    settimesheetKitchenData(updatedTimesheetKitchenData);
+  };
+
+  console.log("selectedIds", selectedIds);
   return (
     <div className="content">
-      <Modal show={showDetail} onHide={handleClose} size="lg">
-        <Modal.Header
-          closeButton
-          style={{ backgroundColor: "#99c8fe", textAlign: "center" }}
-        >
-          <Modal.Title style={{ margin: "auto" }}>
-            THÔNG TIN CHẤM CÔNG
-          </Modal.Title>
+      <Modal show={showConfirm} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>XÁC NHẬN</Modal.Title>
         </Modal.Header>
         <Modal.Body className="row">
-          <div className="col-sm-6">
-            <h3>Nhanvien1</h3>
-            <table className="timesheets-detail-table">
-              <tbody>
-                <tr>
-                  <th>Họ và tên:</th>
-                  <td>scfsdv</td>
-                </tr>
-                <tr>
-                  <th>Hệ số lương:</th>
-                  <td>1.0</td>
-                </tr>
-                <tr>
-                  <th>Họp tại công ty:</th>
-                  <td>Có</td>
-                </tr>
-                <tr>
-                  <th>Hỗ trợ bếp:</th>
-                  <td>N/A</td>
-                </tr>
-                <tr>
-                  <th>Giao cơm:</th>
-                  <td>N/A</td>
-                </tr>
-                <tr>
-                  <th>Bếp được hỗ trợ:</th>
-                  <td>N/A</td>
-                </tr>
-                <tr>
-                  <th>Tình trạng:</th>
-                  <td>Chờ duyệt</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="col-sm-6"></div>
+          <div>Bạn muốn duyệt thông tin chấm công?</div>
         </Modal.Body>
         <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
           <Button
+            type="button"
             style={{
               backgroundColor: "#baeaff",
               border: "none",
               color: "black",
             }}
-            // onClick={() => handleDelete(item?.id)
+            onClick={handleApprove}
             // onClick={handleSubmit}
             // }
           >
-            Duyệt
+            Đồng ý
           </Button>
           <Button
             style={{
@@ -126,113 +227,47 @@ export default function Timesheets() {
             }}
             onClick={handleClose}
           >
-            Từ chối
+            Hủy
           </Button>
         </Modal.Footer>
       </Modal>
 
-      <div className="header-kitchen">
-        <div className="header_kitchen_left">
-          <div
-            className="back-button-header"
-            style={{ paddingLeft: "3px" }}
-            onClick={() => {
-              handleBackClick();
-            }}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </div>
-          <div className="date-container" style={{ position: "relative" }}>
-            {showDropdown ? (
-              <div>
-                <button
-                  className="dropdown-timesheets"
-                  onClick={() => setShowDropdownDate(!showDropdownDate)}
-                >
-                  Chọn thời gian
-                </button>
-              </div>
-            ) : (
-              <div className="chooseDate">
-                <input type="date" ref={fromDateRef} />
-                <span>{" -> "}</span>
-                <input type="date" ref={toDateRef} />
-              </div>
-            )}
-            {showDropdownDate && (
-              <div
-                className="chooseDateDropdown"
-                // style={{ position: "fixed", top: "48px" }}
-              >
-                <input type="date" ref={fromDateRef} />
-                <span>{" -> "}</span>
-                <input type="date" ref={toDateRef} />
-              </div>
-            )}
-          </div>
-          <button
-            className="btnSelect"
-            // onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-          >
-            Tình trạng
-          </button>
-        </div>
-        <div className="header_kitchen_center">
-          <span>Bảng chấm công</span>
-        </div>
-        <div className="header_kitchen_right">
-          {/* <button
-            className="header_kitchen_create-button"
-            onClick={() => {
-              //   goToCreateKitchen();
-            }}
-          >
-            Tạo
-          </button> */}
-          <div className="confirmContainer">
-            <input type="checkbox" />
-            <button className="btn-confirm">Duyệt</button>
-            <button className="btn-refuse">Từ chối</button>
-            {/* <div className="timesheets_kitchen-code">{kitchenCode}</div> */}
-          </div>
-          <div className="timesheets_kitchen-code">{kitchenCode}</div>
-        </div>
-      </div>
-      <div className="content-timesheets">
-        <div className="timesheets-detail">
-          <div className="timesheets-info">
-            <div className="detail-timesheets-header">
-              <div className="detail-title">
-                <input type="checkbox" />
-                <h4>Nhanvien1</h4>
-              </div>
-              <div className="detail-attendance">Có mặt</div>
-            </div>
-            <table className="timesheets-table">
+      <Modal show={showDetail} onHide={handleClose} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <h3>Thông tin chấm công</h3>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="row" style={{ margin: "0px 20px" }}>
+          <h5 style={{ textAlign: "center" }}>
+            Mã nhân viên: {timesheetDetailData[0]?.personnelCode}
+          </h5>
+          <div className="col-sm-6">
+            <table
+              className="timesheets-detail-table"
+              style={{ position: "relative" }}
+            >
               <tbody>
                 <tr>
-                  <th style={{ textAlign: "center" }}>19-12-2020</th>
-                  <td style={{ textAlign: "center" }}>08:00 {"->"} 15:00</td>
-                </tr>
-                <tr>
-                  <th>Người chấm:</th>
+                  <th>Họ và tên:</th>
                   <td>scfsdv</td>
                 </tr>
                 <tr>
                   <th>Hệ số lương:</th>
-                  <td>1.0</td>
+                  <td>{timesheetDetailData[0]?.coefficients}</td>
                 </tr>
                 <tr>
                   <th>Họp tại công ty:</th>
-                  <td>Có</td>
+                  <Format boolean={timesheetDetailData[0]?.joinMeetCompany} />
                 </tr>
-                <tr>
-                  <th>Hỗ trợ bếp:</th>
-                  <td>N/A</td>
-                </tr>
+
                 <tr>
                   <th>Giao cơm:</th>
-                  <td>N/A</td>
+                  <Format boolean={timesheetDetailData[0]?.riceDelivery} />
+                </tr>
+                <tr>
+                  <th>Bếp được hỗ trợ:</th>
+                  <td>{timesheetDetailData[0]?.kitchenCodeSupported}</td>
                 </tr>
                 <tr>
                   <th>Tình trạng:</th>
@@ -240,44 +275,234 @@ export default function Timesheets() {
                 </tr>
               </tbody>
             </table>
-            <div>
-              <button
-                className="btn-detail-attendance"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleClickDetail();
-                }}
+          </div>
+          <div className="col-sm-6">
+            <table
+              className="timesheets-detail-table"
+              style={{ position: "relative" }}
+            >
+              <tbody>
+                <tr>
+                  <th>Ngày:</th>
+                  <td>{timesheetDetailData[0]?.date}</td>
+                </tr>
+                <tr>
+                  <th>Giờ vào:</th>
+                  <td>{timesheetDetailData[0]?.startTime?.slice(0, 8)}</td>
+                </tr>
+                <tr>
+                  <th>Giờ ra:</th>
+                  <td>{timesheetDetailData[0]?.endTime?.slice(0, 8)}</td>
+                </tr>
+                <tr>
+                  <th>Ghi chú:</th>
+                  <td>{timesheetDetailData[0]?.note}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Modal.Body>
+        <Modal.Footer style={{ display: "flex", justifyContent: "center" }}>
+          <button
+            className="btn-confirm"
+            style={{ height: "40px", width: "80px" }}
+            onClick={() => {
+              setshowConfirm(true);
+            }}
+          >
+            <FontAwesomeIcon icon={faCheck} /> Duyệt
+          </button>
+          <button
+            className="btn-refuse"
+            style={{ height: "40px", width: "80px" }}
+          >
+            <FontAwesomeIcon icon={faTimes} /> Từ chối
+          </button>
+        </Modal.Footer>
+      </Modal>
+
+      <div className="header-kitchen-staff">
+        <div className="header_kitchen-staff_left">
+          <button
+            className="header_kitchen-staff_back-button"
+            onClick={() => {
+              handleBackClick();
+            }}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+        </div>
+        <div className="header_kitchen-staff_center">
+          Thông tin chấm công nhân viên
+        </div>
+        <div className="header_kitchen-staff_right">
+          <div className="header_kitchen-staff_kitchen-code">{kitchenCode}</div>
+        </div>
+      </div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div
+          className="content-timesheets"
+          style={{ backgroundColor: "#eeeeec" }}
+        >
+          <div className="timesheets-detail">
+            <div className="timesheets-detail-left">
+              <div
+                className={`sidebar-timesheets ${
+                  activeTab === "all" ? "active" : ""
+                }`}
+                onClick={() => handleTabClick("all")}
               >
-                Xem thêm
-              </button>
+                Tất cả
+              </div>
+              <div
+                className={`sidebar-timesheets ${
+                  activeTab === "pending" ? "active" : ""
+                }`}
+                onClick={() => handleTabClick("pending")}
+              >
+                Chờ duyệt
+              </div>
+              <div
+                className={`sidebar-timesheets ${
+                  activeTab === "approved" ? "active" : ""
+                }`}
+                onClick={() => handleTabClick("approved")}
+              >
+                Đã duyệt
+              </div>
+              <div
+                className={`sidebar-timesheets ${
+                  activeTab === "rejected" ? "active" : ""
+                }`}
+                onClick={() => handleTabClick("rejected")}
+              >
+                Bị từ chối
+              </div>
+            </div>
+
+            <div className="timesheets-detail-right">
+              <div className="timesheets-header">
+                <div className="chooseDate">
+                  <input
+                    type="date"
+                    ref={chooseDateRef}
+                    onChange={(e) => setchooseDate(e.target.value)}
+                  />
+                </div>
+                <div className="confirmContainer">
+                  <button
+                    className="btn-confirm"
+                    style={{ height: "40px", width: "80px" }}
+                    onClick={() => {
+                      setshowConfirm(true);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faCheck} /> Duyệt
+                  </button>
+
+                  <button
+                    className="btn-refuse"
+                    style={{ height: "40px", width: "80px" }}
+                  >
+                    <FontAwesomeIcon icon={faTimes} /> Từ chối
+                  </button>
+                </div>
+              </div>
+              <div className="table-timesheets">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>
+                        <input
+                          type="checkbox"
+                          checked={isHeaderCheckboxChecked}
+                          onChange={handleHeaderCheckboxChange}
+                        ></input>
+                      </th>
+                      <th>Mã nhân viên</th>
+                      <th>Họ và tên</th>
+                      <th>Ngày làm việc</th>
+                      <th>Thời gian chấm công</th>
+                      <th>Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {timesheetKitchenData
+                      ?.filter((item) => {
+                        if (activeTab === "pending") {
+                          return item.approveStatus === "PENDING";
+                        } else if (activeTab === "approved") {
+                          return item.approveStatus === "APPROVE";
+                        } else if (activeTab === "rejected") {
+                          return item.approveStatus === "REJECT";
+                        } else {
+                          return true;
+                        }
+                      })
+                      ?.map((item, index) => (
+                        <tr>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={item.isChecked || false}
+                              onChange={() => handleCheckboxChange(item.id)}
+                              data-id={item.id}
+                            ></input>
+                          </td>
+                          <td>{item?.personnelCode}</td>
+                          <td
+                            onClick={() => {
+                              handleClickDetail(item?.personnelCode);
+                            }}
+                          >
+                            Họ và tên
+                          </td>
+                          <td>
+                            <FormatDate date={item?.date} />
+                          </td>
+                          <td>
+                            {item?.startTime?.slice(0, 8)} {" - "}
+                            {item?.endTime?.slice(0, 8)}
+                          </td>
+                          <td>
+                            {/* <div className="timesheets-status">Chờ duyệt</div> */}
+                            <Format approveStatus={item?.approveStatus} />
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="pagination">
+                {currentPage != 1 && (
+                  <div
+                    className="previous-page-button"
+                    onClick={() => {
+                      if (currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                      }
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                  </div>
+                )}
+
+                <span className="">{currentPage}</span>
+                {currentPage * recordsPerPage < totalRecords && (
+                  <div
+                    className="after-page-button"
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-        <div className="pagination">
-          {currentPage != 1 && (
-            <div
-              className="previous-page-button"
-              onClick={() => {
-                if (currentPage > 1) {
-                  setCurrentPage(currentPage - 1);
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </div>
-          )}
-
-          <span className="">{currentPage}</span>
-          {currentPage * recordsPerPage < totalRecords && (
-            <div
-              className="after-page-button"
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              <FontAwesomeIcon icon={faChevronRight} />
-            </div>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -475,10 +475,11 @@ td {
   background-color: white;
   padding: 7px;
   color: black;
-  border-radius: 50px;
-  margin-right: 3px;
+  border-radius: 5px;
   position: relative;
-  /* height: 42px; */
+  margin: 10px 20px;
+  border: 1px solid #ccc;
+  width: 15%;
 }
 
 .chooseDate input {
@@ -495,21 +496,22 @@ td {
   flex-direction: row;
   align-items: center;
   justify-content: end;
-  width: 75%;
+  width: 85%;
+  margin-right: 20px;
 }
 
 .confirmContainer input {
   width: 20px;
   height: 20px;
+  margin: 0px 5px;
 }
 
 .confirmContainer button {
-  height: 30px;
-  width: 65px;
-  border-radius: 50px;
-  background-color: white;
+  /* height: 30px;
+  width: 65px; */
+  border-radius: 5px;
   border: none;
-  margin: 0px 3px;
+  margin: 0px 5px;
 }
 
 .timesheets_kitchen-code {
@@ -529,16 +531,13 @@ td {
   gap: 5px;
   padding: 5px;
   position: relative; */
-  height: 80vh;
+  height: 90%;
   overflow: auto;
 }
 
 .timesheets-detail {
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  padding: 5px;
-  position: relative;
+  height: 100%;
 }
 
 .timesheets-info {
@@ -582,19 +581,6 @@ td {
   justify-content: center;
 }
 
-.timesheets-table {
-  width: 100%;
-}
-
-.timesheets-table th {
-  padding: 2px 0px;
-  width: 40%;
-  font-weight: 400;
-}
-.timesheets-table td {
-  width: 60%;
-}
-
 .btn-detail-attendance {
   height: 35px;
   background-color: #99c8fe;
@@ -629,6 +615,121 @@ td {
   background-color: white;
 }
 
-.modal-timesheets{
+.modal-timesheets {
   width: 75%;
+}
+
+.timesheets-detail-left {
+  width: 15%;
+  height: 90%;
+  margin: 10px 5px 20px 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.sidebar-timesheets {
+  padding: 10px 0px 10px 20px;
+  cursor: pointer;
+}
+
+.sidebar-timesheets.active {
+  background-color: #644bff;
+  border-radius: 20px;
+  /* margin: 0px 10px; */
+  padding: 15px;
+  color: white;
+}
+
+.timesheets-detail-right {
+  position: relative;
+  width: 85%;
+  height: 90%;
+  margin: 10px 20px 20px 5px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.table-timesheets {
+  width: 100% - 20px;
+  margin: 10px;
+}
+
+.table-timesheets table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-timesheets input {
+  width: 15px;
+  height: 15px;
+}
+
+.table-timesheets th,
+td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.table-timesheets th {
+  background-color: #eeeeec;
+}
+
+.table-timesheets tbody {
+  border: 1px solid #ddd;
+}
+
+.table-timesheets {
+  height: 80%;
+  overflow: auto;
+}
+
+.timesheets-header {
+  display: flex;
+}
+
+.btn-confirm:hover {
+  background-color: rgb(62, 169, 62);
+  color: white;
+}
+
+.btn-refuse:hover {
+  background-color: rgb(221, 92, 92);
+  color: white;
+}
+
+.timesheets-detail-table {
+  position: absolute;
+  width: 90%;
+}
+
+.timesheets-detail-table th {
+  color: #625e5e;
+  font-weight: 450;
+}
+
+.timesheets-detail-table tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.timesheet-pending {
+  background-color: #99c8fe;
+  border: 1px solid #000000;
+  padding: 5px;
+  border-radius: 10px;
+}
+.timesheet-approve {
+  background-color: #49a858;
+  border: 1px solid #000000;
+  padding: 5px;
+  border-radius: 10px;
+  color: white;
+}
+.timesheet-deny {
+  background-color: #eb7155;
+  border: 1px solid #000000;
+  padding: 5px;
+  border-radius: 10px;
+  color: white;
 }
