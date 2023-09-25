@@ -28,6 +28,7 @@ import XuatExcel from "./pages/setting/XuatExcel";
 import ChangePassword from "./pages/setting/ChangePassword";
 import PreviewTimesheet from "./pages/setting/PreviewTimesheet";
 import Timesheets from "./pages/extend/Timesheets";
+import TimesheetDetail from "./pages/staff/TimesheetDetail";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectRouter>
         <EditStaff />
+      </ProtectRouter>
+    ),
+  },
+  {
+    path: "/timesheetDetail/:personnelCode",
+    element: (
+      <ProtectRouter>
+        <TimesheetDetail />
       </ProtectRouter>
     ),
   },

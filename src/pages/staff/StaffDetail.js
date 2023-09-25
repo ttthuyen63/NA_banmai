@@ -84,6 +84,10 @@ export default function StaffDetail() {
     });
   };
 
+  const handleClickTimesheetDetail = (personnelCode) => {
+    navigate("/timesheetDetail/" + personnelCode);
+  };
+
   const handleClose = () => {
     setshowDel(false);
   };
@@ -98,14 +102,16 @@ export default function StaffDetail() {
     console.log("token", token);
 
     const dataToSend = {
-      personnelCode: personnelCode,
-      removeType: "REMOVE",
+      // personnelCode: personnelCode,
+      // removeType: "REMOVE",
     };
 
     const config = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        personnelCode: personnelCode,
+        removeType: "REMOVE",
       },
     };
 
@@ -290,9 +296,11 @@ export default function StaffDetail() {
               <div className="btn-detail attendance-button">
                 <button
                   className="btn btn-primary"
-                  // onClick={() =>
-                  //   handleClickDelete(personnelDetailData?.personnelCode)
-                  // }
+                  onClick={() =>
+                    handleClickTimesheetDetail(
+                      personnelDetailData?.personnelCode
+                    )
+                  }
                 >
                   Xem bảng công
                 </button>

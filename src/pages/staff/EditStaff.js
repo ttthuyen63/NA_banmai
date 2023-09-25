@@ -142,6 +142,7 @@ export default function EditStaff() {
       }
     } catch (error) {
       setError(true);
+      setshowConfirm(false);
       console.log("error", error);
     }
   };

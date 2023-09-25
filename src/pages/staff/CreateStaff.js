@@ -31,6 +31,7 @@ export default function CreateStaff() {
   const selectedPositionRef = useRef(null); // Thêm tham chiếu cho trường Select Chức vụ
   const [showDialog, setshowDialog] = useState(false);
   const [showConfirm, setshowConfirm] = useState(false);
+  const [error, setError] = useState(false);
 
   const data = {
     parts: [
@@ -94,17 +95,7 @@ export default function CreateStaff() {
         config
       );
 
-      if (!response.data.success) {
-        // Xử lý lỗi khi tạo nhân viên không thành công
-        const errorResponse = response.data;
-        setshowValidateError(
-          errorResponse.errorMessage.includes("Validation") || null
-        );
-        setshowDupplucateError(errorResponse.errorCode === 1001 || null);
-        console.log("Error response:", errorResponse);
-        setshowConfirm(false);
-      } else {
-        // Xử lý khi tạo nhân viên thành công
+      if (response.status == 200) {
         const result = response.data;
         console.log(result);
         setshowConfirm(false);
@@ -114,9 +105,13 @@ export default function CreateStaff() {
         }, 2000);
       }
     } catch (error) {
-      console.log("Error:", error);
-      // Xử lý lỗi khi gọi API không thành công
-      // setError(true);
+      const errorResponse = error?.response?.data;
+      setshowValidateError(
+        errorResponse?.errorMessage.includes("Validation") || null
+      );
+      setshowDupplucateError(errorResponse?.errorCode == "1001" || null);
+      console.log("error", error);
+      setshowConfirm(false);
     }
   };
   const handleClickConfirm = () => {
@@ -159,9 +154,9 @@ export default function CreateStaff() {
         </Modal.Footer>
       </Modal>
       <Modal show={showDialog} onHide={handleClose}>
-        {/* <Modal.Header closeButton>
+        <Modal.Header closeButton>
           <Modal.Title>Thành công!!</Modal.Title>
-        </Modal.Header> */}
+        </Modal.Header>
         <Modal.Body style={{ textAlign: "center" }}>
           <FontAwesomeIcon
             icon={faCheck}

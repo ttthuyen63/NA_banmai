@@ -13,7 +13,8 @@ export default function CreateKitchen() {
   const locationRef = useRef(null);
   const [showDialog, setshowDialog] = useState(false);
   const [showConfirm, setshowConfirm] = useState(false);
-
+  const [showValidateError, setshowValidateError] = useState(false);
+  const [showDupplucateError, setshowDupplucateError] = useState(false);
   const handleSubmit = async (e) => {
     const token = sessionStorage.getItem("token");
     console.log("token", token);
@@ -38,11 +39,23 @@ export default function CreateKitchen() {
         config
       );
 
-      const result = response.data;
-      console.log(result);
-      navigate("/kitchenManager"); // Chuyển hướng sau khi tạo thành công
+      if (response.status == 200) {
+        const result = response.data;
+        console.log(result);
+        setshowConfirm(false);
+        setshowDialog(true);
+        const timeOut = setTimeout(() => {
+          navigate("/kitchenManager");
+        }, 2000);
+      }
     } catch (error) {
-      console.log("Error:", error);
+      const errorResponse = error?.response?.data;
+      setshowValidateError(
+        errorResponse?.errorMessage.includes("Validation") || null
+      );
+      setshowDupplucateError(errorResponse?.errorCode == "1001" || null);
+      console.log("error", error);
+      setshowConfirm(false);
     }
   };
 
@@ -91,6 +104,9 @@ export default function CreateKitchen() {
         </Modal.Footer>
       </Modal>
       <Modal show={showDialog} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Thành công!!</Modal.Title>
+        </Modal.Header>
         <Modal.Body style={{ textAlign: "center" }}>
           <FontAwesomeIcon
             icon={faCheck}
@@ -138,6 +154,31 @@ export default function CreateKitchen() {
                 />
               </div>
             </form>
+            {showValidateError ? (
+              <div
+                style={{
+                  marginBottom: "26px",
+                  color: "red",
+                  textAlign: "center",
+                }}
+              >
+                Thông tin bạn nhập vào không hợp lệ!{" "}
+              </div>
+            ) : (
+              ""
+            )}
+            {showDupplucateError ? (
+              <div
+                style={{
+                  color: "red",
+                  textAlign: "center",
+                }}
+              >
+                Mã nhân viên này đã tồn tại!
+              </div>
+            ) : (
+              ""
+            )}
             <div className="create-btn-submit">
               <button
                 type="submit"

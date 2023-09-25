@@ -31,14 +31,24 @@ export default function Timesheets() {
   const [activeTab, setActiveTab] = useState("all");
   const [isHeaderCheckboxChecked, setIsHeaderCheckboxChecked] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
-
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const fromDateRef = useRef();
   const toDateRef = useRef();
   const recordsPerPage = 10;
   const token = sessionStorage.getItem("token");
+  // useEffect(() => {
+  //   getTimesheetApi();
+  // }, [chooseDate]);
+
   useEffect(() => {
+    if (isInitialLoad) {
+      const currentDate = new Date().toISOString().split("T")[0];
+      setchooseDate(currentDate);
+      setIsInitialLoad(false);
+    }
     getTimesheetApi();
   }, [chooseDate]);
+
   const getTimesheetApi = async () => {
     const config = {
       headers: {
@@ -75,6 +85,7 @@ export default function Timesheets() {
     }
   };
 
+  console.log("choosedate", chooseDate);
   const handleBackClick = () => {
     navigate(-1);
     console.log("Back button clicked");
@@ -125,11 +136,6 @@ export default function Timesheets() {
         Authorization: `Bearer ${token}`,
       },
     };
-
-    // const queryParams = new URLSearchParams({
-    //   // page: currentPage - 1, // Trang bắt đầu từ 0
-    //   // size: recordsPerPage,
-    // });
 
     let data = JSON.stringify({
       approveType: "APPROVE",
@@ -271,7 +277,11 @@ export default function Timesheets() {
                 </tr>
                 <tr>
                   <th>Tình trạng:</th>
-                  <td>Chờ duyệt</td>
+                  <td>
+                    <Format
+                      approveStatus={timesheetDetailData[0]?.approveStatus}
+                    />
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -388,6 +398,7 @@ export default function Timesheets() {
                   <input
                     type="date"
                     ref={chooseDateRef}
+                    value={chooseDate}
                     onChange={(e) => setchooseDate(e.target.value)}
                   />
                 </div>
