@@ -137,21 +137,23 @@ export default function Timesheets() {
       },
     };
 
-    let data = JSON.stringify({
+    const dataToSend = {
       approveType: "APPROVE",
       timesheetRawIds: selectedIds,
-    });
+    };
 
     try {
       const response = await axiosInstance.post(
         `${url}/timesheet/management/kitchen/timesheet/approve`,
-        data,
+        dataToSend,
         config
       );
 
       const result = response?.data;
       // const data = result?.data?.content;
       settimesheetKitchenData(result);
+      getTimesheetApi();
+      setshowConfirm(false);
       console.log(result);
     } catch (error) {
       console.log("Error:", error);
@@ -181,7 +183,7 @@ export default function Timesheets() {
     const id = checkbox.getAttribute("data-id");
 
     if (selectedIds.includes(id)) {
-      const updatedSelectedIds = selectedIds.filter(
+      const updatedSelectedIds = selectedIds?.filter(
         (selectedId) => selectedId !== id
       );
       setSelectedIds(updatedSelectedIds);
@@ -440,49 +442,55 @@ export default function Timesheets() {
                     </tr>
                   </thead>
                   <tbody>
-                    {timesheetKitchenData
-                      ?.filter((item) => {
-                        if (activeTab === "pending") {
-                          return item.approveStatus === "PENDING";
-                        } else if (activeTab === "approved") {
-                          return item.approveStatus === "APPROVE";
-                        } else if (activeTab === "rejected") {
-                          return item.approveStatus === "REJECT";
-                        } else {
-                          return true;
-                        }
-                      })
-                      ?.map((item, index) => (
-                        <tr>
-                          <td>
-                            <input
-                              type="checkbox"
-                              checked={item.isChecked || false}
-                              onChange={() => handleCheckboxChange(item.id)}
-                              data-id={item.id}
-                            ></input>
-                          </td>
-                          <td>{item?.personnelCode}</td>
-                          <td
-                            onClick={() => {
-                              handleClickDetail(item?.personnelCode);
-                            }}
-                          >
-                            Họ và tên
-                          </td>
-                          <td>
-                            <FormatDate date={item?.date} />
-                          </td>
-                          <td>
-                            {item?.startTime?.slice(0, 8)} {" - "}
-                            {item?.endTime?.slice(0, 8)}
-                          </td>
-                          <td>
-                            {/* <div className="timesheets-status">Chờ duyệt</div> */}
-                            <Format approveStatus={item?.approveStatus} />
-                          </td>
-                        </tr>
-                      ))}
+                    {timesheetKitchenData?.length > 0 ? (
+                      timesheetKitchenData
+                        .filter((item) => {
+                          if (activeTab === "pending") {
+                            return item.approveStatus === "PENDING";
+                          } else if (activeTab === "approved") {
+                            return item.approveStatus === "APPROVE";
+                          } else if (activeTab === "rejected") {
+                            return item.approveStatus === "REJECT";
+                          } else {
+                            return true;
+                          }
+                        })
+                        ?.map((item, index) => (
+                          <tr>
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={item.isChecked || false}
+                                onChange={() => handleCheckboxChange(item.id)}
+                                data-id={item.id}
+                              ></input>
+                            </td>
+                            <td>{item?.personnelCode}</td>
+                            <td
+                              onClick={() => {
+                                handleClickDetail(item?.personnelCode);
+                              }}
+                            >
+                              Họ và tên
+                            </td>
+                            <td>
+                              <FormatDate date={item?.date} />
+                            </td>
+                            <td>
+                              {item?.startTime?.slice(0, 8)} {" - "}
+                              {item?.endTime?.slice(0, 8)}
+                            </td>
+                            <td>
+                              {/* <div className="timesheets-status">Chờ duyệt</div> */}
+                              <Format approveStatus={item?.approveStatus} />
+                            </td>
+                          </tr>
+                        ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6">Không có dữ liệu</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

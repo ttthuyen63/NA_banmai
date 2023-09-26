@@ -1,15 +1,17 @@
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../components/axiosInstance";
 import { url } from "../../config/api";
+import { Button, Modal } from "react-bootstrap";
 
 export default function UpdatePassword() {
   const navigate = useNavigate();
   const newPasswordRef = useRef(null);
   const retypeNewPasswordRef = useRef(null);
+  const [showDialog, setshowDialog] = useState(false);
   const accountByCodelData = useSelector((state) => state.account);
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -47,9 +49,24 @@ export default function UpdatePassword() {
   const handleBackClick = () => {
     navigate(-1);
   };
+  const handleClose = () => {
+    setshowDialog(false);
+  };
   console.log("accountByCodelData", accountByCodelData);
   return (
     <div>
+      <Modal show={showDialog} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Thành công!!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ textAlign: "center" }}>
+          <FontAwesomeIcon
+            icon={faCheck}
+            style={{ color: "green", fontSize: "80px" }}
+          />
+          <div>Bạn đã cập nhật mật khẩu thành công!!</div>
+        </Modal.Body>
+      </Modal>
       <div className="detail-header">
         <div
           className="back-button-header"

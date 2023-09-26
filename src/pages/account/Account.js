@@ -39,7 +39,7 @@ export default function Account() {
         config
       );
 
-      const data = response.data;
+      const data = response?.data?.data;
       setaccountByCodelData(data);
       dispatch(setAccount(data));
       console.log(data);
@@ -47,6 +47,35 @@ export default function Account() {
       console.log("Error:", error);
     }
   };
+
+  const gotoDelete = async () => {
+    const token = sessionStorage.getItem("token");
+    const dataToSend = {};
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        accountId: accountByCodelData?.id,
+        removeType: "REMOVE",
+      },
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        `${url}/account/management/remove/user`,
+        dataToSend,
+        config
+      );
+
+      const result = response.data;
+      console.log(result);
+      navigate(-1); // Chuyển hướng sau khi cập nhật thành công
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
   const gotoAccount = () => {
     navigate("/account");
   };
@@ -104,7 +133,13 @@ export default function Account() {
               </button>
             </div>
             <div className="btn-detail delete-button">
-              <button>Xóa tài khoản</button>
+              <button
+                onClick={() => {
+                  gotoDelete();
+                }}
+              >
+                Xóa tài khoản
+              </button>
             </div>
           </div>
         </div>
